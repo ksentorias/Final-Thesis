@@ -18,6 +18,7 @@ import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
 import java.io.InputStream;
+import java.util.Scanner;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -26,9 +27,28 @@ public class Test
 {
  public static void main (String args[]) 
  {
+     
+     Scanner s = new Scanner (System.in);
+     
+     System.out.print("choose: ");
+     int yeah = s.nextInt();
+     
+     switch(yeah){
+         
+         case 1:  test1(); break;
+         case 2:  test2();break;
+         case 3: test3();  break;
+         case 4: test4(); break;
+         case 5: test5(); break;
+  
+                 
+         
+     
+         
+     }
      //sparqltest();
      //rdftest();
-    test1();
+   // test1();
      //test2();
     // test3();
        
@@ -75,7 +95,7 @@ while(iter.hasNext()) {
  }
  
  */
- static void test1(){
+ static void test1(){ //first successful ouput of sparql query
  
      
  OntModel model = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF);
@@ -109,12 +129,12 @@ Query query = QueryFactory.create(que);
          //RDFNode x = soln.get("varName") ;
          //JOptionPane.showMessageDialog(null, results);
          
-         System.out.println("Title: " + soln.getLiteral("s").getString());
+         //System.out.println("Title: " + soln.getLiteral("s").getString());
          
          ResultSetFormatter.out(System.out, results, query);
      }
  }
- static void test2(){
+ static void test2(){ //attempt to get data in namespaces
  
        Model model = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF);
        
@@ -141,7 +161,7 @@ model.read(in, null);
     }
   }
  }
- static void test3(){
+ static void test3(){ // attempt to get data in namespaces
  
   //ModelD2RQ m=new ModelD2RQ("file:doc/example/mapping-iswc.ttl");
   FileManager fManager = FileManager.get();
@@ -154,18 +174,78 @@ model.read(in, null);
           "    ?paper dc:creator ?author ."+ 
           "    ?author foaf:name ?authorName ."+ "}";
   
+  String query = "select ?d {?d ?s ?f}";
   
-  Query q=QueryFactory.create(sparql);
+  
+  Query q =QueryFactory.create(sparql);
+  Query eq =QueryFactory.create(query);
+  
   ResultSet rs=QueryExecutionFactory.create(q,m).execSelect();
-  while (rs.hasNext()) {
-    QuerySolution row=rs.nextSolution();
+  ResultSet rse=QueryExecutionFactory.create(eq,m).execSelect();
+  
+  //ResultSetFormatter.out(System.out, rse, eq);
+  
+  
+  while (rse.hasNext()) {
+    QuerySolution row=rse.nextSolution();
     
     
-    //ResultSetFormatter.out(System.out, rs, q);
-    System.out.println("Title: " + row.getLiteral("paperTitle").getString());
+    ResultSetFormatter.out(System.out, rse, eq);
+    //System.out.println("Title: " + row.getLiteral("paperTitle").getString());
+    
+    System.out.println("Title: " + row.getLiteral("?d").getString());
     System.out.println("Author: " + row.getLiteral("authorName").getString());
   }
   m.close();
+ }
+ 
+ static void test4(){ //extract data from the web
+     
+         String service = "http://dbpedia.org/sparql";
+         String service_2 = "http://people.brunel.ac.uk/~csstnns/university.owl";
+    String query = "SELECT ?abstract"+
+            "WHERE {"+
+            "{"+ 
+            "<http://dbpedia.org/resource/Akbar> <http://dbpedia.org/ontology/abstract> ?abstract."+
+            "FILTER langMatches( lang(?abstract), 'en')"+
+            "}"+
+            "}";
+    
+    String q  =  "select * {?s ?p ?o}";
+    QueryExecution qe = QueryExecutionFactory.sparqlService(service_2, q);
+    try {
+        ResultSet results = qe.execSelect();
+
+        for (; results.hasNext();) {
+
+            QuerySolution sol = (QuerySolution) results.next();
+
+            System.out.println(sol.get("?abstract"));
+
+        }
+
+    }catch(Exception e){
+
+        e.printStackTrace();
+    }
+    finally {
+
+       qe.close();
+    }
+ 
+ }
+ 
+ static void test5(){// extract data from the web
+ 
+     
+     try {
+         String url = "http://people.brunel.ac.uk/~csstnns/university.owl";
+         Model model = ModelFactory.createDefaultModel();
+         model.read(url, null);
+         model.write(System.out);
+     } catch (Exception e) {
+         System.out.print(e);
+     }
  }
 
 }
