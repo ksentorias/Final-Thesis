@@ -33,13 +33,15 @@ public class ConnectJena {
             accessor = factory.createHTTP(serviceURI);
             
             try{
-            in = new FileInputStream("C:\\Users\\Ken\\Documents\\NetBeansProjects\\thesis\\src\\thesis\\university.owl");}
+            in = new FileInputStream("C:\\Users\\Merz\\Documents\\k3n\\thesis\\csstnns\\university.owl");}
             catch(FileNotFoundException err){}
             
             
             Model m = ModelFactory.createDefaultModel();
-            String base = "http://test-projects.com/";
+            String base = "http://people.brunel.ac.uk/~csstnns/university.owl";
             m.read(in, base, "RDF/XML");
+            
+            accessor.putModel(m);
      
          
      }
