@@ -1,5 +1,4 @@
-package d2rq;
-
+/*
 import java.io.IOException;
 
 import jena.cmdline.ArgDecl;
@@ -16,18 +15,13 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.sparql.resultset.ResultsFormat;
 import com.hp.hpl.jena.sparql.util.QueryExecUtils;
 
-import de.fuberlin.wiwiss.d2rq.CommandLineTool;
-import de.fuberlin.wiwiss.d2rq.D2RQException;
-import de.fuberlin.wiwiss.d2rq.SystemLoader;
-import de.fuberlin.wiwiss.d2rq.engine.QueryEngineD2RQ;
-import de.fuberlin.wiwiss.d2rq.jena.ModelD2RQ;
 
 /**
  * Command line utility for executing SPARQL queries
  * against a D2RQ-mapped database
  * 
  * @author Richard Cyganiak (richard@cyganiak.de)
- */
+ 
 public class d2r_query extends CommandLineTool {
 	private static final Log log = LogFactory.getLog(d2r_query.class);
 	
@@ -118,4 +112,4 @@ public class d2r_query extends CommandLineTool {
 			d2rqModel.close();
 		}
 	}
-}
+} */

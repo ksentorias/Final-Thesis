@@ -143,9 +143,9 @@ model.read(in, null);
  }
  static void test3(){
  
-  ModelD2RQ m=new ModelD2RQ("file:doc/example/mapping-iswc.ttl");
+  //ModelD2RQ m=new ModelD2RQ("file:doc/example/mapping-iswc.ttl");
   FileManager fManager = FileManager.get();
-  //Model m = fManager.loadModel("C:\\Users\\Ken\\Documents\\NetBeansProjects\\thesis\\src\\thesis\\mapping-iswc.ttl");
+  Model m = fManager.loadModel("C:\\Users\\Ken\\Documents\\NetBeansProjects\\thesis\\src\\thesis\\mapping-iswc.ttl");
 
   String sparql="PREFIX dc: <http://purl.org/dc/elements/1.1/>" + 
           "PREFIX foaf: <http://xmlns.com/foaf/0.1/>" + 
