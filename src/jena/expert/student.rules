@@ -1,0 +1,6 @@
+@prefix fa: <http://www.founder.com/student.owl#>.
+@include <RDFS>.
+@include <OWL>.
+
+[rule1:(?x fa:isSchoolMateWith ?y) notEqual(?x,?y) -> (?y fa:isSchoolMateWith ?x)]
+[rule2:(?x fa:isSchoolMateWith ?y) (?y fa:isSchoolMateWith ?z) notEqual(?x,?y) notEqual(?y,?z) notEqual(?x,?z) -> (?x fa:isSchoolMateWith ?z)]

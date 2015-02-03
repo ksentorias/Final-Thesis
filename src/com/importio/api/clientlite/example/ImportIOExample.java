@@ -83,12 +83,12 @@ public class ImportIOExample {
     Query query;
     List<UUID> connectorGuids;
     
-    // Query for tile Magic Api
+    // Query for tile gsmarena_samsung
     connectorGuids = Arrays.asList(
-      UUID.fromString("f9362534-8df5-4404-b7ba-1086b8d37095")
+      UUID.fromString("cc013404-c3a7-4863-a704-68ae821c73bc")
     );
     queryInput = new HashMap<String,Object>();
-    queryInput.put("webpage/url", "http://www.olx.ph/index.php/view+category/id/137/Phones+and+Handhelds");
+    queryInput.put("webpage/url", "http://www.gsmarena.com/samsung_galaxy_j1-6907.php");
 
     query = new Query();
     query.setConnectorGuids(connectorGuids);

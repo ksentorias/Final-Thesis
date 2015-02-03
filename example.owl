@@ -1,0 +1,436 @@
+<rdf:RDF
+    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+    xmlns:owl="http://www.w3.org/2002/07/owl#"
+    xmlns="http://www.semanticweb.org/maeann/ontologies/2014/10/untitled-ontology-5#"
+    xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#"
+    xmlns:test="http://xu.edu.ph/ecommerce/local/test#"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+    xmlns:webse_2_ken="http://localhost/ont/webse_2_ken.owl#" > 
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#radio">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#comms"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#platform">
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#body">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#wired_headsets">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#headphones"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#battery">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#alert_types">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#sound"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#internal">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#memory"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#Ayosdito">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Website_systems"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#ad_1">
+    <test:resolution rdf:datatype="http://www.w3.org/2001/XMLSchema#string">240 x 320 pixels (~167 ppi pixel density)</test:resolution>
+    <test:brand rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Sony Ericsson</test:brand>
+    <test:sar_eu rdf:datatype="http://www.w3.org/2001/XMLSchema#string">0.77 W/kg (head)</test:sar_eu>
+    <test:wlan rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Wi-Fi 802.11 b/g, DLNA</test:wlan>
+    <test:secondary rdf:datatype="http://www.w3.org/2001/XMLSchema#string">no</test:secondary>
+    <test:radio rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Stereo FM radio with RDS</test:radio>
+    <test:technology rdf:datatype="http://www.w3.org/2001/XMLSchema#string">GSM / HSPA</test:technology>
+    <test:sensors rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Accelerometer</test:sensors>
+    <test:talk_time rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Up to 9 h (2G) / Up to 4 h (3G)</test:talk_time>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <test:java rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Yes + downloadable</test:java>
+    <test:size rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2.4 inches (~35.0% screen-to-body ratio)</test:size>
+    <test:gps rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Yes, with A-GPS; Wayfinder Navigator 7</test:gps>
+    <test:usb rdf:datatype="http://www.w3.org/2001/XMLSchema#string">v2.0</test:usb>
+    <rdf:type rdf:resource="http://xu.edu.ph/ecommerce/local/test#Brand_New"/>
+    <test:loudspeaker rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Yes</test:loudspeaker>
+    <test:dimension rdf:datatype="http://www.w3.org/2001/XMLSchema#string">104 x 49 x 18-19.5 mm</test:dimension>
+    <test:camera_features rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Geo-tagging, face/smile detection, smart contrast, smile detection (with update), video-calling</test:camera_features>
+    <test:browsers rdf:datatype="http://www.w3.org/2001/XMLSchema#string">WAP 2.0/HTML (NetFront), RSS reader</test:browsers>
+    <test:sim rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Mini-SIM</test:sim>
+    <test:status rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Discontinued</test:status>
+    <test:messaging rdf:datatype="http://www.w3.org/2001/XMLSchema#string">SMS (threaded view), MMS, Email, Instant Messaging</test:messaging>
+    <test:music_play rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Up to 380 h (2G) / Up to 360 h (3G)</test:music_play>
+    <test:card_slot rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Memory Stick Micro (M2), up to 8 GB, 2 GB/ 8 GB included</test:card_slot>
+    <test:bluetooth rdf:datatype="http://www.w3.org/2001/XMLSchema#string">v2.0, A2DP</test:bluetooth>
+    <test:alert_types rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Vibration; Downloadable polyphonic, MP3, AAC ringtones</test:alert_types>
+    <test:weight rdf:datatype="http://www.w3.org/2001/XMLSchema#string">136 g (4.80 oz)</test:weight>
+    <test:announced rdf:datatype="http://www.w3.org/2001/XMLSchema#string">2008, June. Released 2008, October</test:announced>
+    <test:phonebook rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1000 x 20 fields, Photo call</test:phonebook>
+    <test:video rdf:datatype="http://www.w3.org/2001/XMLSchema#string">320p@30fps</test:video>
+    <test:price_group rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1111000000</test:price_group>
+    <test:model rdf:datatype="http://www.w3.org/2001/XMLSchema#string">C905</test:model>
+    <test:games rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Yes + downloadable</test:games>
+    <test:sar_us rdf:datatype="http://www.w3.org/2001/XMLSchema#string">1.02 W/kg (head)     0.58 W/kg (body)</test:sar_us>
+    <test:colors rdf:datatype="http://www.w3.org/2001/XMLSchema#string">Night Black, Ice Silver, Copper Gold, Tender Rose</test:colors>
+    <test:three_dot_five_mm_jack rdf:datatype="http://www.w3.org/2001/XMLSchema#string">No</test:three_dot_five_mm_jack>
+    <test:all_record rdf:datatype="http://www.w3.org/2001/XMLSchema#string">30 received, dialed and missed calls</test:all_record>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#price_group">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#misc"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#chargers">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#batteries_and_chargers"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#Mobiles_phones">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Mobile_phone_and_Tablets"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#sound">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#sim">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#body"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#edge">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#network"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#over-the-head">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#headphones"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#java">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#features"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#primary">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#camera"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#camera_features">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#camera"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#music_play">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#battery"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#memory">
+    <rdfs:subPropertyOf rdf:resource="http://www.w3.org/2002/07/owl#topDataProperty"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#three_dot_five_mm_jack">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#sound"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#tablets_with_call">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#tablets"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#camera">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#status">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#launch"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#sensors">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#features"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#mobile_phone_and_gadgets">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Electronics"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#secondary">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#camera"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#in-ear">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#headphones"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#messaging">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#features"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#wlan">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#comms"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#weight">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#body"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#Second_Hand">
+    <owl:equivalentClass rdf:resource="http://xu.edu.ph/ecommerce/local/test#used"/>
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#CCMS"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#resolution">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#display"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#display">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#used">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#mobile_phone_and_gadgets"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#usb">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#comms"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Ontology"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#talk_time">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#battery"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#infrared_port">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#comms"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#CCMS">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Phones_and_handhelds"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#launch">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#Buy_and_Sell">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#OLX"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#Electronics">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Ayosdito"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#Lazada">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Website_systems"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#gpu">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#platform"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#basic_phones">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Mobiles_phones"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#offers">
+    <rdfs:range rdf:resource="http://xu.edu.ph/ecommerce/local/test#Electronics"/>
+    <rdfs:domain rdf:resource="http://xu.edu.ph/ecommerce/local/test#Ayosdito"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#games">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#features"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#chipset">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#platform"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#has">
+    <rdfs:domain rdf:resource="http://xu.edu.ph/ecommerce/local/test#used"/>
+    <rdfs:domain rdf:resource="http://xu.edu.ph/ecommerce/local/test#new"/>
+    <rdfs:domain rdf:resource="http://xu.edu.ph/ecommerce/local/test#Brand_New"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#features">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#technology">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#network"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#tablets_without_call">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#tablets"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#colors">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#misc"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#batteries_and_chargers">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Mobile_phone_and_Tablets"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#nfc">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#comms"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#three_g_network">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#network"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#tablets">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Mobile_phone_and_Tablets"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#sar_eu">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#misc"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#sar_us">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#misc"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#type">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#display"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#stores">
+    <rdfs:range rdf:resource="http://xu.edu.ph/ecommerce/local/test#Ayosdito"/>
+    <rdfs:domain rdf:resource="http://xu.edu.ph/ecommerce/local/test#Website_systems"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#misc">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#smart_phones">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Mobiles_phones"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#mobile_accessories">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Mobile_phone_and_Tablets"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#gps">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#comms"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#size">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#display"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#gprs">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#network"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#os">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#platform"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#loudspeaker">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#sound"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#all_record">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#memory"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#stand_by">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#battery"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#Website_systems">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#headphones">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#mobile_accessories"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#power_banks">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#batteries_and_chargers"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#video">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#camera"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#Mobile_phone_and_Tablets">
+    <owl:equivalentClass rdf:resource="http://xu.edu.ph/ecommerce/local/test#mobile_phone_and_gadgets"/>
+    <owl:equivalentClass rdf:resource="http://xu.edu.ph/ecommerce/local/test#Phones_and_handhelds"/>
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Lazada"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#browsers">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#features"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#batteries">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#batteries_and_chargers"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#brand">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#model">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#Intel_tablet">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#tablets"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#OLX">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Website_systems"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#TestBook">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#NamedIndividual"/>
+    <rdf:type rdf:resource="http://xu.edu.ph/ecommerce/local/test#Brand_New"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#Phones_and_handhelds">
+    <owl:equivalentClass rdf:resource="http://xu.edu.ph/ecommerce/local/test#mobile_phone_and_gadgets"/>
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#Buy_and_Sell"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#comms">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#network">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#dimension">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#body"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#bluetooth">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#comms"/>
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#headphones"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#cpu">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#platform"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#two_g_bands">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#network"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#phonebook">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#memory"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#announced">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#launch"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#new">
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#mobile_phone_and_gadgets"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#Brand_New">
+    <owl:equivalentClass rdf:resource="http://xu.edu.ph/ecommerce/local/test#new"/>
+    <rdfs:subClassOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#CCMS"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#Class"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#use">
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#ObjectProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#speed">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#network"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://xu.edu.ph/ecommerce/local/test#card_slot">
+    <rdfs:subPropertyOf rdf:resource="http://xu.edu.ph/ecommerce/local/test#memory"/>
+    <rdf:type rdf:resource="http://www.w3.org/2002/07/owl#DatatypeProperty"/>
+  </rdf:Description>
+</rdf:RDF>

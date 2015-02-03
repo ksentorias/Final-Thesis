@@ -1,7 +1,10 @@
 package thesis;
 
+import com.hp.hpl.jena.ontology.Individual;
+import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
+import com.hp.hpl.jena.ontology.OntProperty;
 import com.hp.hpl.jena.query.DatasetAccessor;
 import com.hp.hpl.jena.query.DatasetAccessorFactory;
 import com.hp.hpl.jena.query.Query;
@@ -11,11 +14,16 @@ import com.hp.hpl.jena.query.QueryFactory;
 import com.hp.hpl.jena.query.QuerySolution;
 import com.hp.hpl.jena.query.ResultSet;
 import com.hp.hpl.jena.query.ResultSetFormatter;
+import com.hp.hpl.jena.rdf.model.InfModel;
 import com.hp.hpl.jena.rdf.model.Literal;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.RDFNode;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+import com.hp.hpl.jena.rdf.model.StmtIterator;
+import com.hp.hpl.jena.reasoner.rulesys.GenericRuleReasoner;
+import com.hp.hpl.jena.reasoner.rulesys.Rule;
 import com.hp.hpl.jena.update.UpdateExecutionFactory;
 import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateProcessor;
@@ -23,12 +31,15 @@ import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.util.FileManager;
 import com.hp.hpl.jena.vocabulary.OWL;
 import com.hp.hpl.jena.vocabulary.RDFS;
+import com.hp.hpl.jena.vocabulary.ReasonerVocabulary;
+import com.hp.hpl.jena.vocabulary.XSD;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import javax.swing.JOptionPane;
 import org.apache.log4j.Level;
@@ -53,6 +64,7 @@ public class Test
          case 5: test5(); break;
          case 6: test6(); break;
          case 7: test7(); break;
+         case 8: test8(); break;
   
                  
          
@@ -312,20 +324,89 @@ model.read(in, null);
            }
         }
 
-        static void test8(){
+ static void test8(){
 
-       DatasetAccessor accessor = DatasetAccessorFactory.createHTTP("http://localhost:3030/ds/data");
+       DatasetAccessor accessor = DatasetAccessorFactory.createHTTP("http://localhost:3030/ff/data");
 
        // Download the updated model
        Model updated = accessor.getModel();
 
        // Save the updated model over the original file
        try {
-                updated.write(new FileOutputStream("example.owl"), "RDF/XML");
+                updated.write(new FileOutputStream("C:\\Users\\test\\Documents\\example.owl"), "RDF/XML");
+                 System.out.print("success!");
             } catch (FileNotFoundException fileNotFoundException) {
                 System.out.print(fileNotFoundException);
             }
         }
+ 
+ static void test9(){
+ 
+     String ns = "http://www.founder.com/student.owl#";
+		String queryStr = "PREFIX Student:<" + ns +"> " + "SELECT ?student ?schoolmate " + "WHERE {?student Student:isSchoolMateWith ?schoolmate} ";
+		String ruleFile = "C:\\Users\\test\\Documents\\NetBeansProjects\\Ontology_Thesis\\src\\jena\\expert\\student.rules";
+		
+		List<Rule> rules = Rule.rulesFromURL(ruleFile);
+		GenericRuleReasoner reasoner = new GenericRuleReasoner(rules);
+		reasoner.setOWLTranslation(true);
+		reasoner.setDerivationLogging(true);
+		reasoner.setTransitiveClosureCaching(true);
+                
+                OntModel ontModel = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF);
+                String inputFileName="C:\\Users\\Ken\\Documents\\NetBeansProjects\\thesis\\src\\thesis\\university.owl";
+                InputStream in = FileManager.get().open( inputFileName );
+                if (in == null) {
+                    throw new IllegalArgumentException(
+                         "File: " + inputFileName + " not found");
+                }
+                ontModel.read(in, null);
+
+		
+		//OntModel ontModel = ModelFactory.createOntologyModel();
+		
+                OntClass person = ontModel.createClass(ns + "person");
+                OntProperty name = ontModel.createDatatypeProperty(ns + "name");
+                name.setDomain(person);
+                name.setRange(XSD.xstring);
+                OntProperty isSchoolMateWith = ontModel.createObjectProperty(ns + "isSchoolMateWith");
+                isSchoolMateWith.setDomain(person);
+                isSchoolMateWith.setRange(person);
+		
+		Individual zhangSan = ontModel.createIndividual(ns + "zhangSan", ontModel.getResource(ns + "person"));
+		zhangSan.setOntClass(person);
+		zhangSan.setRDFType(person);
+                
+                
+                
+                // output here
+                
+                Resource configuration = ontModel.createResource();
+		configuration.addProperty(ReasonerVocabulary.PROPruleMode, "hybrid");
+
+		InfModel infModel = ModelFactory.createInfModel(reasoner, ontModel);
+		
+		Query query = QueryFactory.create(queryStr);
+		QueryExecution qe = QueryExecutionFactory.create(query, infModel);
+		ResultSet rs = qe.execSelect();
+		ResultSetFormatter.out(System.out, rs, query);
+		if(null != qe) {
+			qe.close();
+		}
+		
+		Resource resource1 = infModel.getResource(ns + "liSi");
+		Resource resource2 = infModel.getResource(ns + "wangEr");
+		StmtIterator stmtIterator = infModel.listStatements(resource1, null, resource2);
+		if (!stmtIterator.hasNext()) {
+			System.out.println("there is no relation between " + resource1.getLocalName() + " and " + resource2.getLocalName());
+		}
+		while (stmtIterator.hasNext()) {
+			Statement stmt = stmtIterator.next();
+			System.out.println("Relation between " + resource1.getLocalName() + " and " + resource2.getLocalName() + " is : " + resource1.getLocalName() + " " + stmt.getPredicate().getLocalName() + " " + resource2.getLocalName());
+		}
+ }
+ 
+ 
+ 
 
 }
 
