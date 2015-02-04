@@ -65,6 +65,8 @@ public class Test
          case 6: test6(); break;
          case 7: test7(); break;
          case 8: test8(); break;
+         case 9: test9(); break;
+         case 10: test10(); break;
   
                  
          
@@ -324,7 +326,7 @@ model.read(in, null);
            }
         }
 
- static void test8(){
+ static void test8(){// output data from jena server
 
        DatasetAccessor accessor = DatasetAccessorFactory.createHTTP("http://localhost:3030/ff/data");
 
@@ -404,6 +406,34 @@ model.read(in, null);
 			System.out.println("Relation between " + resource1.getLocalName() + " and " + resource2.getLocalName() + " is : " + resource1.getLocalName() + " " + stmt.getPredicate().getLocalName() + " " + resource2.getLocalName());
 		}
  }
+ 
+ static void test10(){//get data from jena fuseki
+ 
+     DatasetAccessor accessor = DatasetAccessorFactory.createHTTP("http://localhost:3030/ds/data");
+     
+     Model updated = accessor.getModel();
+     
+
+    String que = "prefix rdfs: <" + RDFS.getURI() + ">"
+                 + " select ?s {?y rdfs:subClassOf ?s}";
+
+    Query query = QueryFactory.create(que);
+         try (QueryExecution qe = QueryExecutionFactory.create(query, updated)) {
+             com.hp.hpl.jena.query.ResultSet results =  qe.execSelect();
+
+             QuerySolution soln = results.nextSolution() ;
+
+             //RDFNode x = soln.get("varName") ;
+             //JOptionPane.showMessageDialog(null, results);
+
+             //System.out.println("Title: " + soln.getLiteral("s").getString());
+
+             ResultSetFormatter.out(System.out, results, query);
+     }
+     
+ }
+ 
+ 
  
  
  
