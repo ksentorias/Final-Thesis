@@ -328,14 +328,14 @@ model.read(in, null);
 
  static void test8(){// output data from jena server
 
-       DatasetAccessor accessor = DatasetAccessorFactory.createHTTP("http://localhost:3030/ff/data");
+       DatasetAccessor accessor = DatasetAccessorFactory.createHTTP("http://localhost:3030/ds/data");
 
        // Download the updated model
        Model updated = accessor.getModel();
 
        // Save the updated model over the original file
        try {
-                updated.write(new FileOutputStream("C:\\Users\\test\\Documents\\example.owl"), "RDF/XML");
+                updated.write(new FileOutputStream("C:\\Users\\test\\Documents\\ecommerce.owl"), "RDF/XML");
                  System.out.print("success!");
             } catch (FileNotFoundException fileNotFoundException) {
                 System.out.print(fileNotFoundException);
@@ -421,12 +421,20 @@ model.read(in, null);
          try (QueryExecution qe = QueryExecutionFactory.create(query, updated)) {
              com.hp.hpl.jena.query.ResultSet results =  qe.execSelect();
 
-             QuerySolution soln = results.nextSolution() ;
 
-             //RDFNode x = soln.get("varName") ;
-             //JOptionPane.showMessageDialog(null, results);
+             String qry = "PREFIX :<http://xu.edu.ph/ecommerce#>\n" +
+                            "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+                            "PREFIX owl:<http://www.w3.org/2002/07/owl#>\n" +
+                            "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>"
+                     + "INSERT DATA\n" +
+                            "{\n" +
+                            "  :ad_4 rdf:type owl:NamedIndividual;" +
+                            "        rdf:type :Phones;" +
+                            "        :ad_name \"SALE!! wohohoho\";      }";
 
-             //System.out.println("Title: " + soln.getLiteral("s").getString());
+                UpdateRequest update  = UpdateFactory.create(qry);
+                UpdateProcessor qexec = UpdateExecutionFactory.createRemote(update, "http://localhost:3030/ds/update");
+                qexec.execute();
 
              ResultSetFormatter.out(System.out, results, query);
      }
