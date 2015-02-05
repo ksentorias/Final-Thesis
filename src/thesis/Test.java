@@ -335,7 +335,7 @@ model.read(in, null);
 
        // Save the updated model over the original file
        try {
-                updated.write(new FileOutputStream("C:\\Users\\test\\Documents\\ecommerce.owl"), "RDF/XML");
+                updated.write(new FileOutputStream("C:\\Users\\test\\Documents\\output.owl"), "RDF/XML");
                  System.out.print("success!");
             } catch (FileNotFoundException fileNotFoundException) {
                 System.out.print(fileNotFoundException);

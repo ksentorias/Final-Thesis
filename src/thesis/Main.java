@@ -16,12 +16,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Scanner;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
-import static thesis.Test.test1;
-import static thesis.Test.test2;
 
 /**
  *
@@ -30,22 +25,14 @@ import static thesis.Test.test2;
 public class Main {
     
     
-    static Connection conn = null;
+   static Connection conn = null;
    static ResultSet rs  = null;
    static PreparedStatement pst = null;
    static String sql = "";
-    
-    
- 
-    
-    
+   
+   
   public static void main (String args[]){
       connect();
-      
-       
-      
-      
-     
  }
   
   public static void connect(){
@@ -65,10 +52,7 @@ public class Main {
           JOptionPane.showMessageDialog(null, sQLException);
       }
       
-   
-  
-      Icon icon = null;
-        try{
+      try{
             sql = "select * from `table 1`";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
