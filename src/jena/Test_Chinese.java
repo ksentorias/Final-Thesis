@@ -153,7 +153,7 @@ public class Test_Chinese {
                  JOptionPane.showMessageDialog(null, "in 1: " + e);
             } 
 	        
-                test.test2();
+               // test.test2();
 
              
 	}
