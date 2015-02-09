@@ -88,6 +88,7 @@ public class Test
          case 12: test12(); break;
          case 13: test13(); break;
          case 14: test14(); break;
+         case 15: test15(); break;
   
                  
          
@@ -686,7 +687,7 @@ model.read(in, null);
             
             
             //System.out.println(thisClass.toString());
-            JOptionPane.showMessageDialog(null, brand);
+           // JOptionPane.showMessageDialog(null, brand);
             
             
             ExtendedIterator instances = brand.listInstances();
@@ -842,7 +843,18 @@ model.read(in, null);
 
 
 
- }    
+ }   
+ 
+ static void test15(){
+     
+     String find  = "lumia 652";
+     
+     String raw = "ambot ani palit mog nokia nga asha 200";
+     
+     System.out.println(raw.contains(find));
+ 
+     
+ }
       }
  
 
