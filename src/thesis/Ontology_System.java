@@ -6,8 +6,6 @@
 
 package thesis;
 
-import com.hp.hpl.jena.ontology.Individual;
-import com.hp.hpl.jena.ontology.OntClass;
 import com.hp.hpl.jena.ontology.OntModel;
 import com.hp.hpl.jena.ontology.OntModelSpec;
 import com.hp.hpl.jena.query.DatasetAccessor;
@@ -22,7 +20,6 @@ import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.util.FileManager;
-import com.hp.hpl.jena.util.iterator.ExtendedIterator;
 import java.awt.HeadlessException;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -32,13 +29,16 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
+import java.util.StringTokenizer;
 import javax.swing.JOptionPane;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import static thesis.Main.conn;
 
 /**
  *
@@ -50,19 +50,24 @@ public class Ontology_System extends javax.swing.JFrame {
    static ResultSet rs  = null;
    static PreparedStatement pst = null;
    
+   
+   
    String ns = "http://xu.edu.ph/ecommerce#";
    
    
    static String sql = ""; 
+ 
    
     Ontology_System() {
         initComponents();
         this.setVisible(true);
-      //  ads();
-      // index();
-      // setSpecsOntology();
-        getModels("samsung");
+      //ads();
+        index();
+    //  setSpecsOntology();
+      //getModels("samsung");
      // getBrands();
+      //getSpecs("mi_4");
+      //getModelfromAd("Solar Outdoor Rugged Powerbank & Solar Outdoor Gadgets lumia"); 
     }
    
    
@@ -91,100 +96,174 @@ public class Ontology_System extends javax.swing.JFrame {
    
     public void index(){
         
+          //<editor-fold defaultstate="collapsed" desc="rj logger">
         Logger rootLogger = Logger.getRootLogger();
-          rootLogger.setLevel(Level.INFO);
-          rootLogger.addAppender(new ConsoleAppender(new PatternLayout("%-6r [%p] %c - %m%n")));
-       
-       int i = 0;
-       int brandCounter = 0;
-       int modelCounter;
-       String brand = "";
-       boolean haveBrand = false;
-       boolean haveModel = false;
-       
-       
-       
-       
-       String[][] newQuery = new String[20][100];
-   
-       String[][] products = ads();
-       String[] BrandsfromOntology = getBrands();
-       String[] modelsfromOntology;
-       
-        System.out.println("starting...");
+        rootLogger.setLevel(Level.INFO);
+        rootLogger.addAppender(new ConsoleAppender(new PatternLayout("%-6r [%p] %c - %m%n")));
         
-       
+//</editor-fold>
         
-        while(products[i][0]!=null){
-            brandCounter=0;
-            modelCounter= 0;
-            
-            //<editor-fold defaultstate="collapsed" desc="check brand">
-   
-                while(brandCounter<34){
-                System.out.println("is "+products[i][0].toLowerCase()+" contains brand: " +BrandsfromOntology[brandCounter]);
-                if(products[i][0].toLowerCase().contains(BrandsfromOntology[brandCounter])) {
-                    System.out.println("yes");
+          //<editor-fold defaultstate="collapsed" desc="variables">
+          boolean haveBrand;
+          boolean haveModel;
+          boolean haveModelfromToken;
+          
+          List<String[]> newQuery = new ArrayList();
+          List<String[]> products = ads();
+          List BrandsfromOntology = getBrands();
+          List modelsfromOntology;
+          //</editor-fold>
+           System.out.println("starting...");
+           
+          for (String[] product : products){
+              int i = 0;
+              haveBrand = false;
+              haveModel = false;
+              haveModelfromToken = false;
+ 
+              String[] productWithfullAttribute = new String[45];
+              
+          //<editor-fold defaultstate="collapsed" desc="add ad details to new query">
+              for (Object productSpecs : product) {
+                  productWithfullAttribute[i] = productSpecs.toString();
+                  i++;
+              }
+//</editor-fold>
+         
+          //<editor-fold defaultstate="collapsed" desc="check brand and model then get specs">
+                for(Object brand: BrandsfromOntology ){
+                System.out.println("is \""+product[0].toLowerCase()+"\" contains brand: \""+brand.toString()+"\"");
+                if(!product[0].toLowerCase().contains(brand.toString().toLowerCase())) {
+                } else {
                     
+                    //if have brand add it to table that he is +brand+
+                    productWithfullAttribute[43] = brand.toString();
+                    
+                    System.out.println("yes");
+                    haveBrand = true;
                     
                     //initialize with matched brand
-                     JOptionPane.showMessageDialog(null,BrandsfromOntology[brandCounter]);
-                    modelsfromOntology  = getModels(BrandsfromOntology[brandCounter]);
-                    
-                    
-                    while(modelsfromOntology[modelCounter]!=null){
+                    JOptionPane.showMessageDialog(null,"Brand found: "+ brand +" from ad: "+product[0]);
+                    modelsfromOntology  = getModels(brand.toString());
+                    for(Object model: modelsfromOntology){
                         
-                        System.out.println("is "+products[i][0].toLowerCase()+" contains model: " +modelsfromOntology[modelCounter]);
-                        if(products[i][0].toLowerCase().contains(modelsfromOntology[modelCounter].toLowerCase())){
-                            System.out.println("yes");
-                            JOptionPane.showMessageDialog(null, "yes!\n"+products[i][0].toLowerCase()+"\n"+modelsfromOntology[modelCounter]);
+                        //<editor-fold defaultstate="collapsed" desc="check model and get specs">
+                        if (!haveModel) {
+                            
+                             //if have already a model list all the models found and store it to model_others
+                            productWithfullAttribute[44] = productWithfullAttribute[44] +"\n"+ model.toString();
+                            
+                            //logs
+                            System.out.println("is ad \""+product[0].toLowerCase().replaceAll("[^a-zA-Z0-9]+"," ")+"\" contains model: \"" +model.toString().toLowerCase().replaceAll("[^a-zA-Z0-9]+"," ")+"\"");
+                            
+                            if(product[0].toLowerCase().replaceAll("[^a-zA-Z0-9]+"," ").contains(model.toString().toLowerCase().replaceAll("[^a-zA-Z0-9]+"," "))){
+                                
+                                System.out.println("yes");
+                                haveModel = true;
+                                
+                                //<editor-fold defaultstate="collapsed" desc="if have already a found specific brand and model truncate the data in thes columns">
+                                productWithfullAttribute[43] = "";
+                                productWithfullAttribute[44] = "";
+                                //</editor-fold>
+                                
+                                //add specifications to the list
+                                for (String specifications : getSpecs(model.toString().replaceAll("\\s+","_").toLowerCase().replaceAll("[^a-zA-Z0-9]+","_"))) {
+                                    productWithfullAttribute[i] = specifications;
+                                    //  JOptionPane.showMessageDialog(null,"specifications "+i+" = " + specifications);
+                                    i++;
+                                }
+                                
+                                JOptionPane.showMessageDialog(null, "yes!\n"+product[0].toLowerCase()+"\n"+model);
+                                
+                                
+                                for (Object object : productWithfullAttribute) {
+                                    
+                                    System.out.println("object = " + object);
+                                    
+                                }
+                                
+                            }
+                            
                         }
+//</editor-fold>
                         
-                        
-                        
-                        modelCounter++;
                     }
                 }
-                
-                
-                brandCounter++;
             }
-            
-           
-            
+                System.out.println("end of brands");
 //</editor-fold>
-        i++;
+             
+            //temp var for model iff more than 1 model
+            String modelFound = "";
+          //<editor-fold defaultstate="collapsed" desc="if brand is not found in ad String try in tokenizing and compare to list of models">
+            if (!haveBrand) {
+                for (Object modelFoundfromTokens : getModelfromAd(product[0])) {
+                    modelFound  =  modelFound +"\n"+ modelFoundfromTokens.toString();
+                    haveModelfromToken = true;
+                }
+            }
+//</editor-fold>
+
+            //if tokenizing is success store it in index 44 which is "model_found"
+            if (haveModelfromToken) productWithfullAttribute[44] = modelFound;
+            
+            //counter for the next statement
+            int j = 0;
+            
+            //<editor-fold defaultstate="collapsed" desc="final lap, if product have empty of null value store "record not found" ">
+            for (String string : productWithfullAttribute) {
+                if (string == null || "".equals(string)) productWithfullAttribute[j] = "RECORD NOT FOUND";
+                j++;
+            }
+//</editor-fold>
+            
+            //in the end, store all products in a new query to be store in db
+            newQuery.add(productWithfullAttribute);
+            
+            }
+          
+          System.out.println("end of products...");
+          
+          for (String[] object : newQuery) {
+              
+              System.out.println(Arrays.toString(object));
+            
         }
-        
-        
-       
    }
     
-    public String[][] ads(){
-        
+    public List<String[]> ads(){
         System.out.println("getting ads list...");
+
+       // List<List<String>> ads = new ArrayList<>();
+        List<String[]> ads = new ArrayList<>();
         
-        String [][] ads =  new String[100][8];
       
-      String user = "root";
-      String pass = "";
-      String host = "127.0.0.1";
-      String db = "ontology_system";
-      int i = 0;
+            
+        //<editor-fold defaultstate="collapsed" desc="variables">
+        String user = "root";
+        String pass = "";
+        String host = "127.0.0.1";
+        String db = "ontology_system";
+        int i = 0;
+//</editor-fold>
       
-      try {
-          System.out.println("connecting to db...");
-          conn = DriverManager.getConnection(
-                  "jdbc:mysql://" + host + "/" + db + "",
-                  "" + user + "",
-                  "" + pass + "");
-          
-          System.out.println("successfull connection...");
+        //<editor-fold defaultstate="collapsed" desc="db connection">
+        
+        try {
+            System.out.println("connecting to db...");
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + host + "/" + db + "",
+                    "" + user + "",
+                    "" + pass + "");
+            
+            System.out.println("successfull connection...");
+
           
           
       } catch (SQLException sQLException) {
           JOptionPane.showMessageDialog(null, sQLException);
       }
+//</editor-fold>
       
       try{
           System.out.println("query'ing ads...");
@@ -202,6 +281,8 @@ public class Ontology_System extends javax.swing.JFrame {
                 String location = rs.getString("location");
                 String posted_by = rs.getString("posted_by");
                 String description = rs.getString("description");
+                String image = rs.getString("image");
+                String link = rs.getString("link");
                 
                  String query = "PREFIX :<http://xu.edu.ph/ecommerce#> " +
                                 "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#> " +
@@ -225,21 +306,33 @@ public class Ontology_System extends javax.swing.JFrame {
              //   UpdateRequest update  = UpdateFactory.create(query);
              //   UpdateProcessor qexec = UpdateExecutionFactory.createRemote(update, "http://localhost:3030/ds/update");
             //    qexec.execute();
+                 
+                //List ad_specs = new ArrayList();//inner List for specs
                 
-                ads[i][0] = ad_name;
-                ads[i][1] = site;
-                ads[i][2] = price;
-                ads[i][3] = date_posted;
-                ads[i][4] = condition;
-                ads[i][5] = location;
-                ads[i][6] = posted_by;
-                ads[i][7] = description;
+                String[] ad_specs = new String[10];
                 
+                ad_specs[0] = ad_name;
+                ad_specs[1] = site;
+                ad_specs[2] = price;
+                ad_specs[3] = date_posted;
+                ad_specs[4] = condition;
+                ad_specs[5] = location;
+                ad_specs[6] = posted_by;
+                ad_specs[7] = description;
+                ad_specs[8] = image;
+                ad_specs[9] = link;
                 
+                /*ad_specs.add(ad_name);
+                ad_specs.add(site);
+                ad_specs.add(price);
+                ad_specs.add(date_posted);
+                ad_specs.add(condition);
+                ad_specs.add(location);
+                ad_specs.add(posted_by);
+                ad_specs.add(description);*/
                 
-                
-                
-               // JOptionPane.showMessageDialog(null,ad_name+"\n"+site+"\n"+price+"\n"+date_posted+"\n"+condition+"\n"+location+"\n"+posted_by+"\n"+description);
+                ads.add(ad_specs); //add the inner list to ads List
+               // ads.add(ad_specs); 
                 i++;
                 
             }
@@ -249,9 +342,14 @@ public class Ontology_System extends javax.swing.JFrame {
             catch(HeadlessException | SQLException err){
             JOptionPane.showMessageDialog(null,err);
         }
-      /* i = 0;
-      while (ads[i][0]!= null){System.out.printlnln(Arrays.toString(ads[i])); i++;}
+      
+      /* for (List<String> list : ads) {
+      
+      System.out.println(list);
+      
+      }
       */
+      
       System.out.println("ads returned...");
       return ads;
       
@@ -315,12 +413,14 @@ public class Ontology_System extends javax.swing.JFrame {
                 String messaging = rs.getString("messaging");
                 String battery = rs.getString("battery");
                 String color = rs.getString("color");
+                String link = rs.getString("_pageUrl");
+                String image = rs.getString("image_specs");
                 
               //  JOptionPane.showMessageDialog(null,brand+"\n"+model+"\n"+technology+"\n"+body_dimensions+"\n"+body_weight+"\n"+sim+"\n"+display_type+"\n"+display_size);
-                
                 System.out.println("*******"+model.replaceAll("\\s+","_").toLowerCase()+"********");
               //   JOptionPane.showMessageDialog(null,"\""+color+"\""+"\n"+model.replaceAll("\\s+","_").toLowerCase());
-                         
+                 
+                
                 String query = "PREFIX :<http://xu.edu.ph/ecommerce#>\n" +
                                 "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
                                 "PREFIX owl:<http://www.w3.org/2002/07/owl#>\n" +
@@ -362,7 +462,10 @@ public class Ontology_System extends javax.swing.JFrame {
                                 ":sensors \""+sensors+"\"; " +
                                 ":messaging \""+messaging+"\"; " +
                                 ":battery \""+battery+"\"; " +
-                                //":colors \""+color+"\" " +
+                                ":link \""+link+"\"; " +
+                                ":image \""+image+"\"; " +
+                               // ":battery \""+color+"\"; " +
+                              //  ":colors \""+color.toLowerCase().replaceAll("[^a-zA-Z0-9]+","_")+"\" " +
                                  "}";
                  
                  
@@ -395,14 +498,14 @@ public class Ontology_System extends javax.swing.JFrame {
             }
   }
   
-    public String[] getBrands(){
+    public List getBrands(){
           Logger rootLogger = Logger.getRootLogger();
           rootLogger.setLevel(Level.INFO);
           rootLogger.addAppender(new ConsoleAppender(new PatternLayout("%-6r [%p] %c - %m%n")));
           
         System.out.println("getting brands list...");
-        String[] brands = new String[50];
-        int i = 0;
+        List <String> brands = new ArrayList();
+     
         
         String a = "";
         
@@ -423,11 +526,11 @@ public class Ontology_System extends javax.swing.JFrame {
                      QuerySolution qs = rs.next();
                      
                      a = a + "\n" + "*******"+qs.get("brands")+"********";
-                     brands[i] = qs.get("brands").toString().substring(qs.get("brands").toString().indexOf("#")+1);
-                     i++;
+                     brands.add(qs.get("brands").toString().substring(qs.get("brands").toString().indexOf("#")+1));
+                 
                     }
                     
-                    System.out.println(a);
+               //     System.out.println(a);
       
       //  brands = new String[] {"samsung","xolo","xiaomi","lg","zte","yezz","blu","toshiba","htc","niu","micromax","pantech","blackberry","motorola","vodafone","celkon","lava","lenovo","maxwest","gigabyte","vivo","verykool","pretigio","acer","nokia","microsoft","spice","plum","sony","gionee","apple","huawei","alcatel","asus","parla"};
        
@@ -437,13 +540,13 @@ public class Ontology_System extends javax.swing.JFrame {
        
   }
     
-    public String[] getModels(String brand){
+    public List getModels(String brand){
         
          Logger rootLogger = Logger.getRootLogger();
           rootLogger.setLevel(Level.INFO);
           rootLogger.addAppender(new ConsoleAppender(new PatternLayout("%-6r [%p] %c - %m%n")));
          
-      String[] models = new String[1000];
+      List <String> models = new ArrayList();
       int i = 0;
         String a = "";
         
@@ -491,13 +594,13 @@ public class Ontology_System extends javax.swing.JFrame {
                      QuerySolution mqs = mrs.next();
                    // JOptionPane.showMessageDialog(null, qs.get("model").toString().substring(qs.get("model").toString().indexOf("#")+1) + "\n" +mqs.get( "model_of_data_value" ));
                     
-                   // models[i] = mqs.get( "model_of_data_value" ).toString();
+                   models.add(mqs.get( "model_of_data_value" ).toString());
                     i++;
                     }
                
                
                }
-                    System.out.println("list of models:\n"+a);
+        //            System.out.println("list of models:\n"+a);
                     //<editor-fold defaultstate="collapsed" desc="check model values">
                     /* int j = 0;
                     while(models[j]!=null){
@@ -512,36 +615,38 @@ public class Ontology_System extends javax.swing.JFrame {
                     return models;
     }
     
-    public String[] getSpecs(String modelfound){
+    public List getModelfromAd(String ad){
+        //<editor-fold defaultstate="collapsed" desc="logger">
+        Logger rootLogger = Logger.getRootLogger();
+        rootLogger.setLevel(Level.INFO);
+        rootLogger.addAppender(new ConsoleAppender(new PatternLayout("%-6r [%p] %c - %m%n")));
+//</editor-fold>
         
-         Logger rootLogger = Logger.getRootLogger();
-          rootLogger.setLevel(Level.INFO);
-          rootLogger.addAppender(new ConsoleAppender(new PatternLayout("%-6r [%p] %c - %m%n")));
-         
-    
-        String[] models = new String[1000];
-      int i = 0;
+        List <String> modelSelected = new ArrayList();
+        boolean gotsomething = false;
         
-       Model model = loadModelfromServer();
+        Model model = loadModelfromServer();
                 
-                    String query =
+ 
+        String query =
                     "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
                     "PREFIX owl: <http://www.w3.org/2002/07/owl#>\n" +
                     "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
                     "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
                     "prefix : <http://xu.edu.ph/ecommerce#>\n" +
                     "\n" +
-                    "\n" +
-                    "SELECT ?model\n" +
-                    "WHERE {\n" +
-                    "   ?model :isaModelof :"+modelfound.toLowerCase()+"\n" +
+                    "SELECT DISTINCT ?model\n" +
+                    "WHERE{\n" +
+                    "?model a :Model\n" +
                     "}";
 
 
                      QueryExecution exec = QueryExecutionFactory.create( query, model );
                      com.hp.hpl.jena.query.ResultSet rs = exec.execSelect();
-                    while ( rs.hasNext() ) {
+                     while ( rs.hasNext() ) {
                      QuerySolution qs = rs.next();
+                     
+                     
                      
                      String mquery =
                     "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
@@ -561,29 +666,159 @@ public class Ontology_System extends javax.swing.JFrame {
                      com.hp.hpl.jena.query.ResultSet mrs = mexec.execSelect();
                     while ( mrs.hasNext() ) {
                      QuerySolution mqs = mrs.next();
-                   // JOptionPane.showMessageDialog(null, qs.get("model").toString().substring(qs.get("model").toString().indexOf("#")+1) + "\n" +mqs.get( "model_of_data_value" ));
-                    
-                    models[i] = mqs.get( "model_of_data_value" ).toString();
-                    i++;
+                     
+                     for (StringTokenizer stringTokenizer = new StringTokenizer(ad); stringTokenizer.hasMoreTokens();) {
+                        String adTokenized = stringTokenizer.nextToken();
+                        
+                        //JOptionPane.showMessageDialog(null, ad +"\n"+adTokenized+"\n");
+                        
+                         for (StringTokenizer stringTokenizer1 = new StringTokenizer(mqs.get("model_of_data_value").toString()); stringTokenizer1.hasMoreTokens();) {
+                             String modelTokenized = stringTokenizer1.nextToken();
+                             
+            //  JOptionPane.(null, ad +"\n"+adTokenized+"\n"+modelTokenized);
+                             
+                             if (modelTokenized.toLowerCase().equals(adTokenized.toLowerCase())) {
+                                 
+                                //JOptionPane.showMessageDialog(null, ad +"\n"+adTokenized+"\n"+modelTokenized+"\n"+mqs.get("model_of_data_value").toString());
+                                modelSelected.add(mqs.get("model_of_data_value").toString());
+                                
+                                gotsomething = true;
+                                break;
+                        }
+                             if (gotsomething)  break;
+                         }
+                         
+                         if (gotsomething)  break; 
                     }
-               
-               
-               }
-                    //<editor-fold defaultstate="collapsed" desc="check model values">
-                    /* int j = 0;
-                    while(models[j]!=null){
-                    
-                    System.out.println(models[j]);
-                    
-                    j++;
-                    }*/
-//</editor-fold>
-                    
-    
-                    return models;
+                      if (gotsomething)  break;
+                   
+                    }
+                     }
+                     
+                     
+                     /*JOptionPane.showMessageDialog(null,modelSelected);
+                     
+                     
+                     
+                     if (gotsomething) {
+                     System.out.println("we got something!");
+                     } else {
+                     System.out.println("nothing");
+                     }*/
+        
+        
+        
+        return modelSelected;
+        
     }
     
-   
+    public String[] getSpecs(String modelfound){
+        
+         Logger rootLogger = Logger.getRootLogger();
+          rootLogger.setLevel(Level.INFO);
+          rootLogger.addAppender(new ConsoleAppender(new PatternLayout("%-6r [%p] %c - %m%n")));
+          
+          System.out.println("extracting specification data from the selected model \""+ modelfound.toUpperCase()+"\"...");
+         
+        String[] specs = new String[33];
+        int i = 0;
+        
+       Model model = loadModelfromServer();
+                
+                     String mquery =
+                             //<editor-fold defaultstate="collapsed" desc="sparql query to get data properties">
+                             "prefix : <http://xu.edu.ph/ecommerce#>\n" +
+                             "\n" +
+                             "\n" +
+                             "SELECT ?brand ?model ?alert_types ?battery ?bluetooth ?camera_features ?camera_primary ?camera_secondary ?camera_video ?chipset ?colors ?cpu ?dimensions \n" +
+                             "?display_resolution ?display_size ?display_type ?gps ?gpu ?image ?loud_speaker ?memory_card_slot ?memory_internal ?messaging ?multi_touch ?network_technology \n" +
+                             "?os ?radio ?sensors ?sim ?three_point_five_mm_jack ?usb ?weight ?wlan ?link ?image\n" +
+                             "WHERE {\n" +
+                             "    :"+modelfound+"  :brand ?brand ;\n" +
+                             "         :model ?model ;\n" +
+                             "         :alert_types ?alert_types ;\n" +
+                             "         :battery ?battery ;\n" +
+                             "         :bluetooth ?bluetooth  ;\n" +
+                             "         :camera_features ?camera_features  ;\n" +
+                             "         :camera_primary ?camera_primary  ;\n" +
+                             "         :camera_secondary ?camera_secondary ;\n" +
+                             "         :camera_video ?camera_video  ;\n" +
+                             "         :chipset ?chipset  ;\n" +
+                             "         :cpu ?cpu  ;\n" +
+                             "         :dimensions ?dimensions  ;\n" +
+                             "         :display_resolution ?display_resolution  ;\n" +
+                             "         :display_size ?display_size  ;\n" +
+                             "         :display_type ?display_type  ;\n" +
+                             "         :gps ?gps ;\n" +
+                             "         :gpu  ?gpu    ;      \n" +
+                             "         :loud_speaker ?loud_speaker ;\n" +
+                             "         :memory_card_slot ?memory_card_slot  ;\n" +
+                             "         :memory_internal ?memory_internal  ;\n" +
+                             "         :messaging ?messaging  ;\n" +
+                             "         :multi_touch ?multi_touch  ;\n" +
+                             "         :network_technology ?network_technology ;\n" +
+                             "         :os ?os  ;\n" +
+                             "         :radio ?radio   ;\n" +
+                             "         :sensors ?sensors  ;\n" +
+                             "         :sim ?sim   ;\n" +
+                             "         :three_point_five_mm_jack ?three_point_five_mm_jack ;\n" +
+                             "         :usb ?usb  ;\n" +
+                             "         :weight ?weight  ;\n" +
+                             "         :wlan ?wlan  ;\n" +
+                             "         :link ?link  ;\n" +
+                             "         :image ?image  ;\n" +
+                             "}";
+//</editor-fold>
+  
+                     QueryExecution mexec = QueryExecutionFactory.create( mquery, model );
+                     com.hp.hpl.jena.query.ResultSet mrs = mexec.execSelect();
+                     
+                     if(mrs.hasNext()){
+                            QuerySolution mqs = mrs.next();
+                            //<editor-fold defaultstate="collapsed" desc="specs[] to specs value">
+                            
+                            specs[0] = mqs.get("brand").toString();
+                            specs[1] = mqs.get("model").toString();
+                            specs[2] = mqs.get("alert_types").toString();
+                            specs[3] = mqs.get("battery").toString();
+                            specs[4] = mqs.get("bluetooth").toString();
+                            specs[5] = mqs.get("camera_features").toString();
+                            specs[6] = mqs.get("camera_primary").toString();
+                            specs[7] = mqs.get("camera_secondary").toString();
+                            specs[8] = mqs.get("camera_video").toString();
+                            specs[9] = mqs.get("chipset").toString();
+                            specs[10] = mqs.get("cpu").toString();
+                            specs[11] = mqs.get("dimensions").toString();
+                            specs[12] = mqs.get("display_resolution").toString();
+                            specs[13] = mqs.get("display_size").toString();
+                            specs[14] = mqs.get("display_type").toString();
+                            specs[15] = mqs.get("gps").toString();
+                            specs[16] = mqs.get("gpu").toString();
+                            specs[17] = mqs.get("loud_speaker").toString();
+                            specs[18] = mqs.get("memory_card_slot").toString();
+                            specs[19] = mqs.get("memory_internal").toString();
+                            specs[20] = mqs.get("messaging").toString();
+                            specs[21] = mqs.get("multi_touch").toString();
+                            specs[22] = mqs.get("network_technology").toString();
+                            specs[23] = mqs.get("os").toString();
+                            specs[24] = mqs.get("radio").toString();
+                            specs[25] = mqs.get("sensors").toString();
+                            specs[26] = mqs.get("sim").toString();
+                            specs[27] = mqs.get("three_point_five_mm_jack").toString();
+                            specs[28] = mqs.get("usb").toString();
+                            specs[29] = mqs.get("weight").toString();
+                            specs[30] = mqs.get("wlan").toString();
+                            specs[31] = mqs.get("link").toString();
+                            specs[32] = mqs.get("image").toString();
+                            
+//</editor-fold>
+                        } 
+                     
+                     System.out.println(Arrays.toString(specs));
+                    
+    
+                    return specs;
+    }
     
     public boolean isAlpha(String name){
     
@@ -611,6 +846,7 @@ public class Ontology_System extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -633,6 +869,9 @@ public class Ontology_System extends javax.swing.JFrame {
         jLabel2.setFont(new java.awt.Font("Calibri Light", 1, 18)); // NOI18N
         jLabel2.setText("Search for a desired Product to begin");
 
+        jButton1.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
+        jButton1.setText("VIEW FULL DETAILS");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -640,12 +879,15 @@ public class Ontology_System extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 1102, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 757, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
@@ -656,7 +898,10 @@ public class Ontology_System extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -698,6 +943,7 @@ public class Ontology_System extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
