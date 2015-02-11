@@ -20,21 +20,27 @@ import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.util.FileManager;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.HeadlessException;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -49,27 +55,31 @@ public class Ontology_System extends javax.swing.JFrame {
    static Connection conn = null;
    static ResultSet rs  = null;
    static PreparedStatement pst = null;
+   public static int ID = 0;
+   DefaultTableModel model;
    
    
    
    String ns = "http://xu.edu.ph/ecommerce#";
    
    
-   static String sql = ""; 
+    static String sql = ""; 
+    private View_full_details view;
  
    
     Ontology_System() {
         initComponents();
         this.setVisible(true);
       //ads();
-        index();
+       // index();
     //  setSpecsOntology();
       //getModels("samsung");
      // getBrands();
       //getSpecs("mi_4");
       //getModelfromAd("Solar Outdoor Rugged Powerbank & Solar Outdoor Gadgets lumia"); 
+        
+        populate_table();
     }
-   
    
     public OntModel loadModel(){
     
@@ -83,6 +93,36 @@ public class Ontology_System extends javax.swing.JFrame {
       model.read(in, null);
       
       return model;
+    }
+    
+    public Connection getConnectiontoDB(){
+    
+         //<editor-fold defaultstate="collapsed" desc="variables">
+        String user = "root";
+        String pass = "";
+        String host = "127.0.0.1";
+        String db = "ontology_system";
+//</editor-fold>
+      
+        //<editor-fold defaultstate="collapsed" desc="db connection">
+        
+        try {
+            System.out.println("connecting to db...");
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + host + "/" + db + "",
+                    "" + user + "",
+                    "" + pass + "");
+            
+            System.out.println("successfull connection...");
+
+          
+          
+      } catch (SQLException sQLException) {
+          JOptionPane.showMessageDialog(null, sQLException);
+      }
+//</editor-fold>
+        
+        return conn;
     }
     
     public Model loadModelfromServer(){
@@ -126,6 +166,9 @@ public class Ontology_System extends javax.swing.JFrame {
           //<editor-fold defaultstate="collapsed" desc="add ad details to new query">
               for (Object productSpecs : product) {
                   productWithfullAttribute[i] = productSpecs.toString();
+                  if (i==2) { productWithfullAttribute[i] = productSpecs.toString().replaceAll("\\s+","").toLowerCase().replaceAll("[^a-zA-Z0-9]+","");
+                      
+                  }
                   i++;
               }
 //</editor-fold>
@@ -143,7 +186,8 @@ public class Ontology_System extends javax.swing.JFrame {
                     haveBrand = true;
                     
                     //initialize with matched brand
-                    JOptionPane.showMessageDialog(null,"Brand found: "+ brand +" from ad: "+product[0]);
+                 //   JOptionPane.showMessageDialog(null,"Brand found: "+ brand +" from ad: "+product[0]);
+                    
                     modelsfromOntology  = getModels(brand.toString());
                     for(Object model: modelsfromOntology){
                         
@@ -173,8 +217,8 @@ public class Ontology_System extends javax.swing.JFrame {
                                     i++;
                                 }
                                 
-                                JOptionPane.showMessageDialog(null, "yes!\n"+product[0].toLowerCase()+"\n"+model);
-                                
+                        //        JOptionPane.showMessageDialog(null, "yes!\n"+product[0].toLowerCase()+"\n"+model);
+                               
                                 
                                 for (Object object : productWithfullAttribute) {
                                     
@@ -211,10 +255,17 @@ public class Ontology_System extends javax.swing.JFrame {
             int j = 0;
             
             //<editor-fold defaultstate="collapsed" desc="final lap, if product have empty of null value store "record not found" ">
+            
+           
+            
             for (String string : productWithfullAttribute) {
-                if (string == null || "".equals(string)) productWithfullAttribute[j] = "RECORD NOT FOUND";
-                j++;
+            if (string == null || "".equals(string)) productWithfullAttribute[j] = " ";
+            j++;
             }
+            
+               
+               
+            
 //</editor-fold>
             
             //in the end, store all products in a new query to be store in db
@@ -227,6 +278,7 @@ public class Ontology_System extends javax.swing.JFrame {
           for (String[] object : newQuery) {
               
               System.out.println(Arrays.toString(object));
+              insertFinaldataToDB(object);
             
         }
    }
@@ -820,18 +872,139 @@ public class Ontology_System extends javax.swing.JFrame {
                     return specs;
     }
     
-    public boolean isAlpha(String name){
+    public void insertFinaldataToDB(String [] finalQuery){
+        Connection conn = getConnectiontoDB();
+        String eachData = "";
+        
+        int i = 0;
+            for (String string : finalQuery) {
+                eachData = eachData + "\n"+ "\""+finalQuery[i]+"\",";
+                i++;
+            }
+            
+            System.out.println("\n\n\n"+ eachData.substring(0, eachData.length()-1));
+            
+           // JOptionPane.showMessageDialog(this, eachData.substring(0, eachData.length()-1));
+        
+        try{
+            sql = "INSERT INTO ontology_system_final_table ( `ad_name`, `site`, `price`, `date_posted`, `2nd_or_brandnew`, `location`, \n" +
+"                 `posted_by`, `description`, `image`, `link`, `brand`, \n" +
+"                 `model`, `alert_types`, `battery`, `bluetooth`, `camera_features`, \n" +
+"                 `camera_primary`, `camera_secondary`, `camera_video`, `chipset`, `cpu`, `body_dimensions`, \n" +
+"                 `display_resolution`, `display_size`, `display_type`, `gps`, `gpu`, `loudspeaker`, \n" +
+"                 `memory_card_slot`, `memory_internal`, `messaging`, `multitouch`, `network_technology`, `os`, \n" +
+"                `radio`, `sensors`, `sim`, `three_dot_five_mm_jack`, `usb`, `body_weight`, \n" +
+"                 `wlan`, `specs_link`, `image_specs`, `brand_others`, `model_others` ) VALUES ("+eachData.substring(0, eachData.length()-1)+");";
+
+           pst = conn.prepareStatement(sql);
+            pst.executeUpdate(sql);
+            
+            
+            
+            }
+        catch(Exception err){
+                    JOptionPane.showMessageDialog(null,"set_new_to_db: "+ err);
+                }
+        
+        
+        
+        
+    }
     
-         char[] chars = name.toCharArray();
+    public void populate_table(){
+        
+        model  = (DefaultTableModel) ad_table.getModel();
+       // table_overview.getColumnModel().getColumn(1).setCellRenderer(new TableCellLongTextRenderer ());
+        ad_table.getTableHeader().setFont(new java.awt.Font("Calibri", Font.BOLD, 14));
+        ad_table.getTableHeader().setBackground(Color.WHITE);
+        ad_table.setShowGrid(true);
 
-    for (char c : chars) {
-        if(!Character.isLetter(c)) {
-            return false;
+
+       try{ 
+        sql = "select * from ontology_system_final_table";
+        pst = getConnectiontoDB().prepareStatement(sql);
+        rs = pst.executeQuery();
+        
+        while(rs.next()){
+            
+            model.addRow(new Object[]{rs.getString("ad_name"), rs.getString("site"), rs.getString("brand"), rs.getString("model"),rs.getString("price"), rs.getString("chipset"), rs.getString("cpu"), rs.getString("camera_primary"),rs.getString("memory_internal")});
+        
+        }     
+   
+        //table_overview.setModel(DbUtils.resultSetToTableModel(rs));
+        
+        /*while(rs.next()){           
+       table_overview.setValueAt(rs.getString("prop_id"), i, 0);
+       
+          //  JOptionPane.showMessageDialog(null,rs.getString("prop_id"));
+        i++;
+        }*/
+       }
+       catch(SQLException err){
+           System.err.println(err);
+       }
+    }
+    
+    public String commaMaker(String price){
+    
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
+        symbols.setGroupingSeparator(',');
+        symbols.setDecimalSeparator('.');
+        String pattern = "#,##0.0#";
+        DecimalFormat df = new DecimalFormat(pattern, symbols);
+        df.setParseBigDecimal(true);     
+        
+        
+        /*price = proposed.replaceAll(Pattern.quote(","),"");
+        equi = equi.replaceAll(Pattern.quote(","),"");
+        other = other.replaceAll(Pattern.quote(","),"");
+        
+        if("".equals(proposed)){proposed = "0";}
+        if("".equals(equi)){equi = "0";}
+        if("".equals(other)){other = "0";}*/
+        
+        BigDecimal price_i = new BigDecimal(price);
+        
+        /*      BigDecimal equi_i = new BigDecimal(equi);
+        BigDecimal other_i = new BigDecimal(other);
+        BigDecimal total = new BigDecimal("0");
+        
+        total = total.add(proposed_i);
+        total = total.add(equi_i);
+        total = total.add(other_i);
+        */
+        return df.format(price_i);
+        
+      
+        
+        
+        
+    }  
+    
+    public int get_id_selected_row(){
+        int id_row = 0;
+        try{
+            
+            
+         sql= "select id from ontology_system_final_table where id = "+ ad_table.getSelectedRow();
+         pst = conn.prepareStatement(sql);
+         rs = pst.executeQuery();
+         
+         if(rs.next()){
+             
+             id_row = rs.getInt("id");
         }
+        
+        }
+        catch(SQLException | HeadlessException err){
+            JOptionPane.showMessageDialog(null, "get_id "+err);
+        }
+        
+        return id_row;
+        
     }
-
-    return true;
-    }
+        
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -843,25 +1016,24 @@ public class Ontology_System extends javax.swing.JFrame {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        ad_table = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
+
+        ad_table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null, null, null}
+
             },
             new String [] {
-                "Ad", "Site Location", "Brand", "Model", "Price", "Chipset", "CPU", "Camera", "Memory", "Date posted", "Condition", "Location"
+                "Ad", "Site Location", "Brand", "Model", "Price", "Chipset", "CPU", "Camera", "Memory"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(ad_table);
 
         jTextField1.setFont(new java.awt.Font("Calibri Light", 0, 18)); // NOI18N
         jTextField1.setText("Samsung");
@@ -871,6 +1043,11 @@ public class Ontology_System extends javax.swing.JFrame {
 
         jButton1.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
         jButton1.setText("VIEW FULL DETAILS");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -884,7 +1061,7 @@ public class Ontology_System extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel2))
-                        .addGap(0, 757, Short.MAX_VALUE))
+                        .addGap(0, 673, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jButton1)))
@@ -907,6 +1084,22 @@ public class Ontology_System extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        
+        if (ad_table.getSelectedRow() == -1) {
+            JOptionPane.showMessageDialog(null, "Please select a proposal before to view");
+        } else {
+            
+            if (get_id_selected_row() == 0) {
+                JOptionPane.showMessageDialog(null, "Please select a proposal before to view");
+            } 
+            else {
+                view = new View_full_details();
+                view.setVisible(true);
+            }
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -918,7 +1111,7 @@ public class Ontology_System extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Windows".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -943,10 +1136,10 @@ public class Ontology_System extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable ad_table;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
