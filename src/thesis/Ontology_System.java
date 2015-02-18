@@ -41,6 +41,7 @@ import java.util.StringTokenizer;
 import java.util.regex.Pattern;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -69,16 +70,17 @@ public class Ontology_System extends javax.swing.JFrame {
    
     Ontology_System() {
         initComponents();
+        this.setLocationRelativeTo(null);
         this.setVisible(true);
       //ads();
-       // index();
-    //  setSpecsOntology();
+     //  index();
+     // setSpecsOntology();
       //getModels("samsung");
      // getBrands();
       //getSpecs("mi_4");
       //getModelfromAd("Solar Outdoor Rugged Powerbank & Solar Outdoor Gadgets lumia"); 
         
-        populate_table();
+       populate_table();
     }
    
     public OntModel loadModel(){
@@ -165,10 +167,14 @@ public class Ontology_System extends javax.swing.JFrame {
               
           //<editor-fold defaultstate="collapsed" desc="add ad details to new query">
               for (Object productSpecs : product) {
-                  productWithfullAttribute[i] = productSpecs.toString();
-                  if (i==2) { productWithfullAttribute[i] = productSpecs.toString().replaceAll("\\s+","").toLowerCase().replaceAll("[^a-zA-Z0-9]+","");
-                      
+                  
+                  productWithfullAttribute[i] = StringEscapeUtils.escapeSql( productSpecs.toString()).replaceAll("\"","&quote;");
+                  
+                  
+                  if (i==2) { productWithfullAttribute[i] = "Php " + productSpecs.toString().replaceAll("\\s+","").replaceAll("\\?", "").replaceAll("[^\\d.]", "");
+                  
                   }
+                  
                   i++;
               }
 //</editor-fold>
@@ -220,11 +226,11 @@ public class Ontology_System extends javax.swing.JFrame {
                         //        JOptionPane.showMessageDialog(null, "yes!\n"+product[0].toLowerCase()+"\n"+model);
                                
                                 
-                                for (Object object : productWithfullAttribute) {
-                                    
-                                    System.out.println("object = " + object);
-                                    
-                                }
+                                /*for (Object object : productWithfullAttribute) {
+                                
+                                System.out.println("object = " + object);
+                                
+                                }*/
                                 
                             }
                             
@@ -275,12 +281,12 @@ public class Ontology_System extends javax.swing.JFrame {
           
           System.out.println("end of products...");
           
-          for (String[] object : newQuery) {
-              
-              System.out.println(Arrays.toString(object));
-              insertFinaldataToDB(object);
-            
-        }
+          /*for (String[] object : newQuery) {
+          
+          System.out.println(Arrays.toString(object));
+          insertFinaldataToDB(object);
+          
+          }*/
    }
     
     public List<String[]> ads(){
@@ -319,7 +325,7 @@ public class Ontology_System extends javax.swing.JFrame {
       
       try{
           System.out.println("query'ing ads...");
-            sql = "select * from `table 1`";
+            sql = "select * from `ads`";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
             
@@ -328,8 +334,6 @@ public class Ontology_System extends javax.swing.JFrame {
                 String ad_name = rs.getString("ad_name");
                 String site = rs.getString("site");
                 String price = rs.getString("price");
-                String date_posted = rs.getString("date_posted");
-                String condition = rs.getString("2nd_or_brandnew");
                 String location = rs.getString("location");
                 String posted_by = rs.getString("posted_by");
                 String description = rs.getString("description");
@@ -348,8 +352,6 @@ public class Ontology_System extends javax.swing.JFrame {
                                 ":ad_name \""+ad_name+"\"; " +
                                 ":site \""+site+"\"; " +
                                 ":price \""+price+"\"; " +
-                                ":date_posted \""+date_posted+"\"; " +
-                                ":2nd_or_brandnew \""+condition+"\"; " +
                                 ":location \""+location+"\"; " +
                                 ":posted_by  \""+posted_by+"\"; " +
                                 ":description \""+description+"\" " +
@@ -366,8 +368,8 @@ public class Ontology_System extends javax.swing.JFrame {
                 ad_specs[0] = ad_name;
                 ad_specs[1] = site;
                 ad_specs[2] = price;
-                ad_specs[3] = date_posted;
-                ad_specs[4] = condition;
+                ad_specs[3] = "";
+                ad_specs[4] = "";
                 ad_specs[5] = location;
                 ad_specs[6] = posted_by;
                 ad_specs[7] = description;
@@ -427,46 +429,46 @@ public class Ontology_System extends javax.swing.JFrame {
       }
       
       try{
-            sql = "select * from `ken_2`";
+            sql = "select * from `specifications`";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
             
             while(rs.next()){
                 
-                String brand = rs.getString("brand");
-                String model = rs.getString("model");
-                String network_technology = rs.getString("network_technology");
-                String body_dimensions = rs.getString("body_dimensions");
-                String body_weight = rs.getString("body_weight");
-                String sim = rs.getString("sim");
-                String display_type  = rs.getString("display_type");
-                String display_size = rs.getString("display_size");
-                String display_resolution = rs.getString("display_resolution");
-                String multitouch = rs.getString("multitouch");
-                String os = rs.getString("os");
-                String chipset = rs.getString("chipset");
-                String cpu = rs.getString("cpu");
-                String gpu = rs.getString("gpu");
-                String memory_card_slot  = rs.getString("memory_card_slot");
-                String memory_internal = rs.getString("memory_internal");
-                String camera_primary = rs.getString("camera_primary");
-                String camera_features = rs.getString("camera_features");
-                String camera_video = rs.getString("camera_video");
-                String camera_secondary = rs.getString("camera_secondary");
-                String alert_types = rs.getString("alert_types");
-                String loudspeaker = rs.getString("loudspeaker");
-                String three_point_five_mm_jack  = rs.getString("three_dot_five_mm_jack");
-                String wlan = rs.getString("wlan");
-                String bluetooth = rs.getString("bluetooth");
-                String gps = rs.getString("gps");
-                String radio = rs.getString("radio");
-                String usb = rs.getString("usb");
-                String sensors = rs.getString("sensors");
-                String messaging = rs.getString("messaging");
-                String battery = rs.getString("battery");
-                String color = rs.getString("color");
-                String link = rs.getString("_pageUrl");
-                String image = rs.getString("image_specs");
+                String brand = rs.getString("brand").replaceAll("\"","&quote;");
+                String model = rs.getString("model").replaceAll("\"","&quote;");
+                String network_technology = rs.getString("network_technology").replaceAll("\"","&quote;");
+                String body_dimensions = rs.getString("body_dimensions").replaceAll("\"","&quote;");
+                String body_weight = rs.getString("body_weight").replaceAll("\"","&quote;");
+                String sim = rs.getString("sim").replaceAll("\"","&quote;");
+                String display_type  = rs.getString("display_type").replaceAll("\"","&quote;");
+                String display_size = rs.getString("display_size").replaceAll("\"","&quote;");
+                String display_resolution = rs.getString("display_resolution").replaceAll("\"","&quote;");
+                String multitouch = rs.getString("multitouch").replaceAll("\"","&quote;");
+                String os = rs.getString("os").replaceAll("\"","&quote;");
+                String chipset = rs.getString("chipset").replaceAll("\"","&quote;");
+                String cpu = rs.getString("cpu").replaceAll("\"","&quote;");
+                String gpu = rs.getString("gpu").replaceAll("\"","&quote;");
+                String memory_card_slot  = rs.getString("memory_card_slot").replaceAll("\"","&quote;");
+                String memory_internal = rs.getString("memory_internal").replaceAll("\"","&quote;");
+                String camera_primary = rs.getString("camera_primary").replaceAll("\"","&quote;");
+                String camera_features = rs.getString("camera_features").replaceAll("\"","&quote;");
+                String camera_video = rs.getString("camera_video").replaceAll("\"","&quote;");
+                String camera_secondary = rs.getString("camera_secondary").replaceAll("\"","&quote;");
+                String alert_types = rs.getString("alert_types").replaceAll("\"","&quote;");
+                String loudspeaker = rs.getString("loudspeaker").replaceAll("\"","&quote;");
+                String three_point_five_mm_jack  = rs.getString("three_dot_five_mm_jack").replaceAll("\"","&quote;");
+                String wlan = rs.getString("wlan").replaceAll("\"","&quote;");
+                String bluetooth = rs.getString("bluetooth").replaceAll("\"","&quote;");
+                String gps = rs.getString("gps").replaceAll("\"","&quote;");
+                String radio = rs.getString("radio").replaceAll("\"","&quote;");
+                String usb = rs.getString("usb").replaceAll("\"","&quote;");
+                String sensors = rs.getString("sensors").replaceAll("\"","&quote;");
+                String messaging = rs.getString("messaging").replaceAll("\"","&quote;");
+                String battery = rs.getString("battery").replaceAll("\"","&quote;");
+                String color = rs.getString("color").replaceAll("\"","&quote;");
+                String link = rs.getString("_pageUrl").replaceAll("\"","&quote;");
+                String image = rs.getString("image_specs").replaceAll("\"","&quote;");
                 
               //  JOptionPane.showMessageDialog(null,brand+"\n"+model+"\n"+technology+"\n"+body_dimensions+"\n"+body_weight+"\n"+sim+"\n"+display_type+"\n"+display_size);
                 System.out.println("*******"+model.replaceAll("\\s+","_").toLowerCase()+"********");
@@ -523,10 +525,14 @@ public class Ontology_System extends javax.swing.JFrame {
                  
               
                  
-
-                UpdateRequest update  = UpdateFactory.create(query);
-                UpdateProcessor qexec = UpdateExecutionFactory.createRemote(update, "http://localhost:3030/ds/update");
-                qexec.execute();
+                try {
+                    
+                    UpdateRequest update = UpdateFactory.create(query);
+                    UpdateProcessor qexec = UpdateExecutionFactory.createRemote(update, "http://localhost:3030/ds/update");
+                    qexec.execute();
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null,e + "\n" + ":os \""+os+"\"; ");
+                }
                 i++;
                                 
 
@@ -866,7 +872,6 @@ public class Ontology_System extends javax.swing.JFrame {
 //</editor-fold>
                         } 
                      
-                     System.out.println(Arrays.toString(specs));
                     
     
                     return specs;
@@ -915,7 +920,7 @@ public class Ontology_System extends javax.swing.JFrame {
         
         model  = (DefaultTableModel) ad_table.getModel();
        // table_overview.getColumnModel().getColumn(1).setCellRenderer(new TableCellLongTextRenderer ());
-        ad_table.getTableHeader().setFont(new java.awt.Font("Calibri", Font.BOLD, 14));
+        ad_table.getTableHeader().setFont(new java.awt.Font("Segoe UI", Font.BOLD, 14));
         ad_table.getTableHeader().setBackground(Color.WHITE);
         ad_table.setShowGrid(true);
 
@@ -999,9 +1004,13 @@ public class Ontology_System extends javax.swing.JFrame {
         catch(SQLException | HeadlessException err){
             JOptionPane.showMessageDialog(null, "get_id "+err);
         }
-        
+        ID = id_row+1;
         return id_row;
         
+    }
+    
+    public static int get_ID(){
+        return ID;
     }
         
     
@@ -1018,13 +1027,16 @@ public class Ontology_System extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         ad_table = new javax.swing.JTable();
         jTextField1 = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("E-COMMERCE ONTOLOGY SYSTEM");
 
         jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
 
+        ad_table.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
         ad_table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
@@ -1036,18 +1048,20 @@ public class Ontology_System extends javax.swing.JFrame {
         jScrollPane1.setViewportView(ad_table);
 
         jTextField1.setFont(new java.awt.Font("Calibri Light", 0, 18)); // NOI18N
-        jTextField1.setText("Samsung");
 
-        jLabel2.setFont(new java.awt.Font("Calibri Light", 1, 18)); // NOI18N
-        jLabel2.setText("Search for a desired Product to begin");
-
-        jButton1.setFont(new java.awt.Font("Calibri", 1, 18)); // NOI18N
-        jButton1.setText("VIEW FULL DETAILS");
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jButton1.setText("view full details");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
+
+        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButton2.setText("Search");
+
+        jComboBox1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ad/Product", "Brand", "Model", "Site" }));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -1056,29 +1070,33 @@ public class Ontology_System extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2))
-                        .addGap(0, 673, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 973, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1)))
+                        .addComponent(jButton1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(jLabel2)
-                .addGap(18, 18, 18)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 366, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(23, 23, 23)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -1086,17 +1104,15 @@ public class Ontology_System extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         
+        get_id_selected_row();
+        
         if (ad_table.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(null, "Please select a proposal before to view");
+            JOptionPane.showMessageDialog(null, "Please select a ad before to view");
         } else {
             
-            if (get_id_selected_row() == 0) {
-                JOptionPane.showMessageDialog(null, "Please select a proposal before to view");
-            } 
-            else {
                 view = new View_full_details();
                 view.setVisible(true);
-            }
+            
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -1138,7 +1154,8 @@ public class Ontology_System extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable ad_table;
     private javax.swing.JButton jButton1;
-    private javax.swing.JLabel jLabel2;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
