@@ -20,67 +20,50 @@ import com.hp.hpl.jena.update.UpdateFactory;
 import com.hp.hpl.jena.update.UpdateProcessor;
 import com.hp.hpl.jena.update.UpdateRequest;
 import com.hp.hpl.jena.util.FileManager;
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.HeadlessException;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.math.BigDecimal;
+import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 import javax.swing.JOptionPane;
-import javax.swing.table.DefaultTableModel;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
+import static thesis.Ontology_System.conn;
+import static thesis.Ontology_System.sql;
 
 /**
  *
  * @author test
  */
-public class Ontology_System extends javax.swing.JFrame {
-
+public class GetData extends javax.swing.JDialog {
+    
    static Connection conn = null;
    static ResultSet rs  = null;
    static PreparedStatement pst = null;
-   public static int ID = 0;
-   DefaultTableModel model;
 
-   String ns = "http://xu.edu.ph/ecommerce#";
-   
-   static String sql = ""; 
-   private View_full_details view;
-   
-   GetData getdata;
- 
-   
-    Ontology_System() {
+    Ontology_System home;
+    private static  List<String[]> data;
+    
+    
+    
+    public GetData(java.awt.Frame parent, boolean modal) {
+        super(parent, modal);
         initComponents();
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
-        
-     // ads();
-       // index();
-     // setSpecsOntology();
-      //getModels("samsung");
-     // getBrands();
-      //getSpecs("mi_4");
-      //getModelfromAd("Solar Outdoor Rugged Powerbank & Solar Outdoor Gadgets lumia"); 
-        
-       populate_table();
+        this.setLocationRelativeTo(parent);
+        jLabel3.setVisible(false);
     }
-   
+    
     public OntModel loadModel(){
     
       OntModel model = ModelFactory.createOntologyModel( OntModelSpec.OWL_MEM_MICRO_RULE_INF);
@@ -133,7 +116,7 @@ public class Ontology_System extends javax.swing.JFrame {
         
         return loadedModel;
     }
-   
+    
     public void index(){
         
           //<editor-fold defaultstate="collapsed" desc="rj logger">
@@ -142,6 +125,8 @@ public class Ontology_System extends javax.swing.JFrame {
         rootLogger.addAppender(new ConsoleAppender(new PatternLayout("%-6r [%p] %c - %m%n")));
         
 //</editor-fold>
+        
+               get_data_from_web();
         
           //<editor-fold defaultstate="collapsed" desc="variables">
           boolean haveBrand;
@@ -154,6 +139,10 @@ public class Ontology_System extends javax.swing.JFrame {
           List modelsfromOntology;
           //</editor-fold>
            System.out.println("starting...");
+           
+           
+           
+           
            
           for (String[] product : products){
               int i = 0;
@@ -286,294 +275,6 @@ public class Ontology_System extends javax.swing.JFrame {
           }
    }
     
-    public List<String[]> ads(){
-         //<editor-fold defaultstate="collapsed" desc="rj logger">
-        Logger rootLogger = Logger.getRootLogger();
-        rootLogger.setLevel(Level.INFO);
-        rootLogger.addAppender(new ConsoleAppender(new PatternLayout("%-6r [%p] %c - %m%n")));
-        
-//</editor-fold>
-        System.out.println("getting ads list...");
-
-       // List<List<String>> ads = new ArrayList<>();
-        List<String[]> ads = new ArrayList<>();
-            
-        //<editor-fold defaultstate="collapsed" desc="variables">
-        String user = "root";
-        String pass = "";
-        String host = "127.0.0.1";
-        String db = "ontology_system";
-        int i = 0;
-//</editor-fold>
-      
-        //<editor-fold defaultstate="collapsed" desc="db connection">
-        
-        try {
-            System.out.println("connecting to db...");
-            conn = DriverManager.getConnection(
-                    "jdbc:mysql://" + host + "/" + db + "",
-                    "" + user + "",
-                    "" + pass + "");
-            
-            System.out.println("successfull connection...");
-
-          
-          
-      } catch (SQLException sQLException) {
-          JOptionPane.showMessageDialog(null, sQLException);
-      }
-//</editor-fold>
-      
-      try{
-          System.out.println("query'ing ads...");
-            sql = "select * from `ads`";
-            pst = conn.prepareStatement(sql);
-            rs = pst.executeQuery();
-            
-            while(rs.next()){
-                
-                String ad_name = rs.getString("ad_name");
-                String site = rs.getString("site");
-                String price = rs.getString("price");
-                String location = rs.getString("location");
-                String posted_by = rs.getString("posted_by");
-                String description = rs.getString("description");
-                String image = rs.getString("image");
-                String link = rs.getString("link");
-                
-                 String querya = "PREFIX :<http://xu.edu.ph/ecommerce#>\n" +
-                                "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-                                "PREFIX owl:<http://www.w3.org/2002/07/owl#>\n" +
-                                "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>\n" +
-                                "\n" +
-                                "INSERT DATA\n" +
-                                "{\n" +
-                                ":ad_"+i+" rdf:type owl:NamedIndividual;\n" +
-                                "rdf:type :Products;\n" +
-                                ":offers :"+site.trim().toLowerCase()+";\n" +
-                                ":ad_name \""+ad_name.replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
-                                ":price \""+price.replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
-                                ":location \""+location.replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
-                                ":posted_by \""+posted_by.replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
-                                ":image \""+image.replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
-                                ":link \""+link.replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
-                                ":description  \""+description.replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
-                                "}";
-                 
-                try {
-                    UpdateRequest update = UpdateFactory.create(querya);
-                    UpdateProcessor qexec = UpdateExecutionFactory.createRemote(update, "http://localhost:3030/ds/update");
-                    qexec.execute();
-                } catch (Exception e) {
-                    System.err.println("insert sparql ads = " + e);
-                }
-                
-                //<editor-fold defaultstate="collapsed" desc="from --mem /ds to output.owl">
-                DatasetAccessor accessor = DatasetAccessorFactory.createHTTP("http://localhost:3030/ds/data");
-                
-                // Download the updated model
-                Model updated = accessor.getModel();
-                
-                // Save the updated model over the original file
-                try {
-                    updated.write(new FileOutputStream("C:\\Users\\test\\Documents\\test owl\\with ads.owl"), "RDF/XML");
-                    System.out.println("success!");
-                } catch (FileNotFoundException fileNotFoundException) {
-                    System.out.println(fileNotFoundException);
-                }
-//</editor-fold>
-                 
-                //List ad_specs = new ArrayList();//inner List for specs
-                
-                String[] ad_specs = new String[10];
-                
-                ad_specs[0] = ad_name;
-                ad_specs[1] = site;
-                ad_specs[2] = price;
-                ad_specs[3] = "";
-                ad_specs[4] = "";
-                ad_specs[5] = location;
-                ad_specs[6] = posted_by;
-                ad_specs[7] = description;
-                ad_specs[8] = image;
-                ad_specs[9] = link;
-            
-                
-              
-                ads.add(ad_specs); //add the inner list to ads List
-               // ads.add(ad_specs); 
-                i++;
-                
-            }
-            
-            System.out.println("ads successfully initialized...");
-            }
-            catch(HeadlessException | SQLException err){
-            JOptionPane.showMessageDialog(null,err);
-        }
-      
-      /* for (List<String> list : ads) {
-      
-      System.out.println(list);
-      
-      }
-      */
-      
-      System.out.println("ads returned...");
-      return ads;
-      
-      
-      
-  }
-  
-    public void setSpecsOntology(){
-  
-      String user = "root";
-      String pass = "";
-      String host = "127.0.0.1";
-      String db = "ontology_system";
-      int i = 4;
-      
-      try {
-          conn = DriverManager.getConnection(
-                  "jdbc:mysql://" + host + "/" + db + "",
-                  "" + user + "",
-                  "" + pass + "");
-      } catch (SQLException sQLException) {
-          JOptionPane.showMessageDialog(null, sQLException);
-      }
-      
-      try{
-            sql = "select * from `specifications`";
-            pst = conn.prepareStatement(sql);
-            rs = pst.executeQuery();
-            
-            while(rs.next()){
-                
-                String brand = rs.getString("brand").replaceAll("\"","&quote;");
-                String model = rs.getString("model").replaceAll("\"","&quote;");
-                String network_technology = rs.getString("network_technology").replaceAll("\"","&quote;");
-                String body_dimensions = rs.getString("body_dimensions").replaceAll("\"","&quote;");
-                String body_weight = rs.getString("body_weight").replaceAll("\"","&quote;");
-                String sim = rs.getString("sim").replaceAll("\"","&quote;");
-                String display_type  = rs.getString("display_type").replaceAll("\"","&quote;");
-                String display_size = rs.getString("display_size").replaceAll("\"","&quote;");
-                String display_resolution = rs.getString("display_resolution").replaceAll("\"","&quote;");
-                String multitouch = rs.getString("multitouch").replaceAll("\"","&quote;");
-                String os = rs.getString("os").replaceAll("\"","&quote;");
-                String chipset = rs.getString("chipset").replaceAll("\"","&quote;");
-                String cpu = rs.getString("cpu").replaceAll("\"","&quote;");
-                String gpu = rs.getString("gpu").replaceAll("\"","&quote;");
-                String memory_card_slot  = rs.getString("memory_card_slot").replaceAll("\"","&quote;");
-                String memory_internal = rs.getString("memory_internal").replaceAll("\"","&quote;");
-                String camera_primary = rs.getString("camera_primary").replaceAll("\"","&quote;");
-                String camera_features = rs.getString("camera_features").replaceAll("\"","&quote;");
-                String camera_video = rs.getString("camera_video").replaceAll("\"","&quote;");
-                String camera_secondary = rs.getString("camera_secondary").replaceAll("\"","&quote;");
-                String alert_types = rs.getString("alert_types").replaceAll("\"","&quote;");
-                String loudspeaker = rs.getString("loudspeaker").replaceAll("\"","&quote;");
-                String three_point_five_mm_jack  = rs.getString("three_dot_five_mm_jack").replaceAll("\"","&quote;");
-                String wlan = rs.getString("wlan").replaceAll("\"","&quote;");
-                String bluetooth = rs.getString("bluetooth").replaceAll("\"","&quote;");
-                String gps = rs.getString("gps").replaceAll("\"","&quote;");
-                String radio = rs.getString("radio").replaceAll("\"","&quote;");
-                String usb = rs.getString("usb").replaceAll("\"","&quote;");
-                String sensors = rs.getString("sensors").replaceAll("\"","&quote;");
-                String messaging = rs.getString("messaging").replaceAll("\"","&quote;");
-                String battery = rs.getString("battery").replaceAll("\"","&quote;");
-                String color = rs.getString("color").replaceAll("\"","&quote;");
-                String link = rs.getString("_pageUrl").replaceAll("\"","&quote;");
-                String image = rs.getString("image_specs").replaceAll("\"","&quote;");
-                
-              //  JOptionPane.showMessageDialog(null,brand+"\n"+model+"\n"+technology+"\n"+body_dimensions+"\n"+body_weight+"\n"+sim+"\n"+display_type+"\n"+display_size);
-                System.out.println("*******"+model.replaceAll("\\s+","_").toLowerCase()+"********");
-              //   JOptionPane.showMessageDialog(null,"\""+color+"\""+"\n"+model.replaceAll("\\s+","_").toLowerCase());
-                 
-                
-                String query = "PREFIX :<http://xu.edu.ph/ecommerce#>\n" +
-                                "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-                                "PREFIX owl:<http://www.w3.org/2002/07/owl#>\n" +
-                                "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>\n" +
-                                "\n" +
-                                "INSERT DATA\n" +
-                                "{\n" +
-                                ":"+model.replaceAll("\\s+","_").toLowerCase().replaceAll("[^a-zA-Z0-9]+","_")+" rdf:type owl:NamedIndividual;\n" +
-                                "rdf:type :Model;\n" +
-                                ":isaModelof :"+brand.trim().toLowerCase()+";\n" +
-                                ":brand \""+brand+"\"; " +
-                                ":model \""+model+"\"; " +
-                                ":network_technology \""+network_technology+"\"; " +
-                                ":dimensions \""+body_dimensions+"\"; " +
-                                ":weight \""+body_weight+"\"; " +
-                                ":sim \""+sim+"\"; " +
-                                ":display_type  \""+display_type+"\"; " +
-                                ":display_size \""+display_size+"\"; " +
-                                ":display_resolution \""+display_resolution+"\"; " +
-                                ":multi_touch \""+multitouch+"\"; " +
-                                ":os \""+os+"\"; " +
-                                ":chipset \""+chipset+"\"; " +
-                                ":cpu \""+cpu+"\"; " +
-                                ":gpu \""+gpu+"\"; " +
-                                ":memory_card_slot  \""+memory_card_slot+"\"; " +
-                                ":memory_internal \""+memory_internal+"\"; " +
-                                ":camera_primary \""+camera_primary+"\"; " +
-                                ":camera_features  \""+camera_features+"\"; " +
-                                ":camera_video \""+camera_video+"\"; " +
-                                ":camera_secondary \""+camera_secondary+"\"; " +
-                                ":alert_types \""+alert_types+"\"; " +
-                                ":loud_speaker \""+loudspeaker+"\"; " +
-                                ":three_point_five_mm_jack \""+three_point_five_mm_jack+"\"; " +
-                                ":wlan \""+wlan+"\"; " +
-                                ":bluetooth \""+bluetooth+"\"; " +
-                                ":gps  \""+gps+"\"; " +
-                                ":radio \""+radio+"\"; " +
-                                ":usb  \""+usb+"\"; " +
-                                ":sensors \""+sensors+"\"; " +
-                                ":messaging \""+messaging+"\"; " +
-                                ":battery \""+battery+"\"; " +
-                                ":link \""+link+"\"; " +
-                                ":image \""+image+"\"; " +
-                               // ":battery \""+color+"\"; " +
-                              //  ":colors \""+color.toLowerCase().replaceAll("[^a-zA-Z0-9]+","_")+"\" " +
-                                 "}";
-                 
-                 
-              
-                 
-                try {
-                    
-                    UpdateRequest update = UpdateFactory.create(query);
-                    UpdateProcessor qexec = UpdateExecutionFactory.createRemote(update, "http://localhost:3030/ds/update");
-                    qexec.execute();
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null,e + "\n" + ":os \""+os+"\"; ");
-                }
-                i++;
-                                
-
-            }
-      }
-       catch(SQLException | HeadlessException err){
-          JOptionPane.showMessageDialog(null,err);
-       
-       }
-      
-      //<editor-fold defaultstate="collapsed" desc="from --mem to output.owl">
-      DatasetAccessor accessor = DatasetAccessorFactory.createHTTP("http://localhost:3030/ds/data");
-      
-      // Download the updated model
-      Model updated = accessor.getModel();
-      
-      // Save the updated model over the original file
-      try {
-          updated.write(new FileOutputStream("C:\\Users\\test\\Documents\\test owl\\output.owl"), "RDF/XML");
-          System.out.println("success!");
-      } catch (FileNotFoundException fileNotFoundException) {
-          System.out.println(fileNotFoundException);
-      }
-//</editor-fold>
-  }
-  
     public List getBrands(){
           Logger rootLogger = Logger.getRootLogger();
           rootLogger.setLevel(Level.INFO);
@@ -896,6 +597,8 @@ public class Ontology_System extends javax.swing.JFrame {
     }
     
     public void insertFinaldataToDB(String [] finalQuery){
+        System.out.println("inserting gathered data to database...");
+        
         Connection conn = getConnectiontoDB();
         String eachData = "";
         
@@ -923,7 +626,7 @@ public class Ontology_System extends javax.swing.JFrame {
             
             
             }
-        catch(Exception err){
+        catch(SQLException err){
                     JOptionPane.showMessageDialog(null,"set_new_to_db: "+ err);
                 }
         
@@ -932,146 +635,200 @@ public class Ontology_System extends javax.swing.JFrame {
         
     }
     
-    public void populate_table(){
+    public void get_data_from_web(){
+        Connection conn = getConnectiontoDB();
         
-        model  = (DefaultTableModel) ad_table.getModel();
-       // table_overview.getColumnModel().getColumn(1).setCellRenderer(new TableCellLongTextRenderer ());
-        ad_table.getTableHeader().setFont(new java.awt.Font("Segoe UI", Font.BOLD, 14));
-        ad_table.getTableHeader().setBackground(Color.WHITE);
-        ad_table.setShowGrid(true);
+        String sqlb = "";
         
-       try{ 
-        sql = "select * from ontology_system_final_table";
-        pst = getConnectiontoDB().prepareStatement(sql);
-        rs = pst.executeQuery();
-        
-        while(rs.next()){
-            
-            model.addRow(new Object[]{rs.getString("ad_name"), rs.getString("site"), rs.getString("brand"), rs.getString("model"),rs.getString("price"), rs.getString("chipset"), rs.getString("cpu"), rs.getString("camera_primary"),rs.getString("memory_internal")});
-        
-        }     
-       }
-       catch(SQLException err){
-           System.err.println(err);
-       }
-    }
-    
-    public void populate_search(){
-        DefaultTableModel model  = (DefaultTableModel) ad_table.getModel();
-       // table_overview.getColumnModel().getColumn(1).setCellRenderer(new TableCellLongTextRenderer ());
-        ad_table.getTableHeader().setFont(new java.awt.Font("Segoe UI", Font.BOLD, 14));
-        ad_table.getTableHeader().setBackground(Color.WHITE);
-        ad_table.setShowGrid(true);
-        
-        String searched = jTextField1.getText();
-        searched = "%"+ searched + "%";
-        
-        String category = (String) jComboBox1.getSelectedItem();
-        
-        switch(category){
-            
-            case "Ad/Product":{
-                category = "ad_name";
-            break;
-            }
-            case "Brand":{
-                category = "brand";
-            break;
-            }
-            case "Model":{
-                category = "model";
-            break;
-            }
-            case "Site":{
-                category = "site";
-            break;
-                }
+        String limit = "limit";
+        if (jCheckBox1.isSelected()) {
+            sqlb = "TRUNCATE TABLE olx;\n" +
+                    "TRUNCATE TABLE lazada;\n" +
+                    "TRUNCATE TABLE ebay;\n" +
+                    "TRUNCATE TABLE ontology_system_final_table;\n" +
+                    "TRUNCATE TABLE ads;\n\n";
         }
-        
-        for(int row_index = ad_table.getRowCount();ad_table.getRowCount()!=0;row_index--){
-            if(row_index==0){JOptionPane.showMessageDialog(null,"last");}
-            model.removeRow(row_index-1);
-        }
-        
-       try{ 
-        sql = "SELECT * FROM `ontology_system_final_table` WHERE `"+category+"` LIKE '"+searched+"' ";
-        pst = getConnectiontoDB().prepareStatement(sql);
-        rs = pst.executeQuery();
-        
-        while(rs.next()){
+        if (jCheckBox3.isSelected()) {
+            limit = limit + " " + jTextField2.getText();
             
-            model.addRow(new Object[]{rs.getString("ad_name"), rs.getString("site"), rs.getString("brand"), rs.getString("model"),rs.getString("price"), rs.getString("chipset"), rs.getString("cpu"), rs.getString("camera_primary"),rs.getString("memory_internal")});
-        
-        }     
-       }
-       catch(SQLException err){
-           System.err.println(err);
-       }
-    }
+        }
+        else limit = "";
     
-    public String commaMaker(String price){
-    
-        DecimalFormatSymbols symbols = new DecimalFormatSymbols();
-        symbols.setGroupingSeparator(',');
-        symbols.setDecimalSeparator('.');
-        String pattern = "#,##0.0#";
-        DecimalFormat df = new DecimalFormat(pattern, symbols);
-        df.setParseBigDecimal(true);     
-        
-        
-        /*price = proposed.replaceAll(Pattern.quote(","),"");
-        equi = equi.replaceAll(Pattern.quote(","),"");
-        other = other.replaceAll(Pattern.quote(","),"");
-        
-        if("".equals(proposed)){proposed = "0";}
-        if("".equals(equi)){equi = "0";}
-        if("".equals(other)){other = "0";}*/
-        
-        BigDecimal price_i = new BigDecimal(price);
-        
-        /*      BigDecimal equi_i = new BigDecimal(equi);
-        BigDecimal other_i = new BigDecimal(other);
-        BigDecimal total = new BigDecimal("0");
-        
-        total = total.add(proposed_i);
-        total = total.add(equi_i);
-        total = total.add(other_i);
-        */
-        return df.format(price_i);
-        
-      
-        
-        
-        
-    }  
-    
-    public int get_id_selected_row(){
-        int id_row = 0;
         try{
+            sqlb = sqlb + "LOAD DATA LOCAL INFILE 'C:/Users/test/Documents/final ad crawler csv/ebay crawl.csv' INTO TABLE ebay FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\n' IGNORE 1 LINES;# 54 rows affected.\n" +
+                "\n" +
+                "LOAD DATA LOCAL INFILE 'C:/Users/test/Documents/final ad crawler csv/olx crawl.csv' INTO TABLE olx FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\n' IGNORE 1 LINES;# 581 rows affected.\n" +
+                "\n" +
+                "LOAD DATA LOCAL INFILE 'C:/Users/test/Documents/final ad crawler csv/lazada crawl.csv' INTO TABLE lazada FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\n' IGNORE 1 LINES;# 32 rows affected.\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "INSERT INTO ads (ad_name, site, price, location, posted_by, description, image, link)\n" +
+                "(SELECT link, g, h, cdf, i, asd, image, e FROM ebay "+limit+")\n" +
+                "union\n" +
+                "(SELECT g, ad_name, h, dsf, cdf, zxcz, i, link FROM olx "+limit+")\n" +
+                "union\n" +
+                "(SELECT g, ad_name, cxzc, cdf, zxcz, dsf, h, link FROM lazada "+limit+")# 15 rows affected.";
+            
+             JOptionPane.showMessageDialog(null,"get data from web: \n"+ sqlb);
+
+           PreparedStatement pstb = conn.prepareStatement(sqlb);
+           pstb.execute(sql);
             
             
-         sql= "select id from ontology_system_final_table where id = "+ ad_table.getSelectedRow();
-         pst = conn.prepareStatement(sql);
-         rs = pst.executeQuery();
-         
-         if(rs.next()){
-             
-             id_row = rs.getInt("id");
-        }
-        
-        }
-        catch(SQLException | HeadlessException err){
-            JOptionPane.showMessageDialog(null, "get_id "+err);
-        }
-        ID = id_row+1;
-        return id_row;
-        
+            
+            }
+        catch(Exception err){
+                    JOptionPane.showMessageDialog(null,"get data from web: "+ err);
+                }
     }
     
-    public static int get_ID(){
-        return ID;
-    }
+    public List<String[]> ads(){
+         //<editor-fold defaultstate="collapsed" desc="rj logger">
+        Logger rootLogger = Logger.getRootLogger();
+        rootLogger.setLevel(Level.INFO);
+        rootLogger.addAppender(new ConsoleAppender(new PatternLayout("%-6r [%p] %c - %m%n")));
         
+//</editor-fold>
+        System.out.println("getting ads list...");
+        
+        String limit = "";
+     
+        if (jCheckBox4.isSelected()) {
+            limit = "limit " + jTextField3.getText();
+        }
+
+       // List<List<String>> ads = new ArrayList<>();
+        List<String[]> ads = new ArrayList<>();
+            
+        //<editor-fold defaultstate="collapsed" desc="variables">
+        String user = "root";
+        String pass = "";
+        String host = "127.0.0.1";
+        String db = "ontology_system";
+        int i = 0;
+//</editor-fold>
+      
+        //<editor-fold defaultstate="collapsed" desc="db connection">
+        
+        try {
+            System.out.println("connecting to db...");
+            conn = DriverManager.getConnection(
+                    "jdbc:mysql://" + host + "/" + db + "",
+                    "" + user + "",
+                    "" + pass + "");
+            
+            System.out.println("successfull connection...");
+
+          
+          
+      } catch (SQLException sQLException) {
+          JOptionPane.showMessageDialog(null, sQLException);
+      }
+//</editor-fold>
+      
+      try{
+          System.out.println("query'ing ads...");
+            sql = "select * from `ads` "+limit+" ";
+            pst = conn.prepareStatement(sql);
+            rs = pst.executeQuery();
+            
+            while(rs.next()){
+                
+                String ad_name = rs.getString("ad_name");
+                String site = rs.getString("site");
+                String price = rs.getString("price");
+                String location = rs.getString("location");
+                String posted_by = rs.getString("posted_by");
+                String description = rs.getString("description");
+                String image = rs.getString("image");
+                String link = rs.getString("link");
+                
+                 String querya = "PREFIX :<http://xu.edu.ph/ecommerce#>\n" +
+                                "PREFIX rdf:<http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+                                "PREFIX owl:<http://www.w3.org/2002/07/owl#>\n" +
+                                "PREFIX xsd:<http://www.w3.org/2001/XMLSchema#>\n" +
+                                "\n" +
+                                "INSERT DATA\n" +
+                                "{\n" +
+                                ":ad_"+i+" rdf:type owl:NamedIndividual;\n" +
+                                "rdf:type :Products;\n" +
+                                ":offers :"+site.trim().toLowerCase()+";\n" +
+                                ":ad_name \""+ad_name.replaceAll("\\s+","_").replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
+                                ":price \""+price.replaceAll("\\s+","_").replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
+                                ":location \""+location.replaceAll("\\s+","_").replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
+                                ":posted_by \""+posted_by.replaceAll("\\s+","_").replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
+                                ":image \""+image.replaceAll("\\s+","_").replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
+                                ":link \""+link.replaceAll("\\s+","_").replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
+                                ":description  \""+description.replaceAll("\\s+","_").replaceAll("[^a-zA-Z0-9]+","_")+"\"; " +
+                                "}";
+                 
+                try {
+                    UpdateRequest update = UpdateFactory.create(querya);
+                    UpdateProcessor qexec = UpdateExecutionFactory.createRemote(update, "http://localhost:3030/ds/update");
+                    qexec.execute();
+                } catch (Exception e) {
+                    System.err.println("insert sparql ads = " + e);
+                }
+                
+                //<editor-fold defaultstate="collapsed" desc="from --mem /ds to output.owl">
+                DatasetAccessor accessor = DatasetAccessorFactory.createHTTP("http://localhost:3030/ds/data");
+                
+                // Download the updated model
+                Model updated = accessor.getModel();
+                
+                // Save the updated model over the original file
+                try {
+                    updated.write(new FileOutputStream("C:\\Users\\test\\Documents\\test owl\\with ads.owl"), "RDF/XML");
+                    System.out.println("success!");
+                } catch (FileNotFoundException fileNotFoundException) {
+                    System.err.println(fileNotFoundException);
+                }
+//</editor-fold>
+                 
+                //List ad_specs = new ArrayList();//inner List for specs
+                
+                String[] ad_specs = new String[10];
+                
+                ad_specs[0] = ad_name;
+                ad_specs[1] = site;
+                ad_specs[2] = price;
+                ad_specs[3] = "";
+                ad_specs[4] = "";
+                ad_specs[5] = location;
+                ad_specs[6] = posted_by;
+                ad_specs[7] = description;
+                ad_specs[8] = image;
+                ad_specs[9] = link;
+            
+                
+              
+                ads.add(ad_specs); //add the inner list to ads List
+               // ads.add(ad_specs); 
+                i++;
+                
+            }
+            
+            System.out.println("ads successfully initialized...");
+            }
+            catch(HeadlessException | SQLException err){
+            JOptionPane.showMessageDialog(null,err);
+        }
+      
+      /* for (List<String> list : ads) {
+      
+      System.out.println(list);
+      
+      }
+      */
+      
+      System.out.println("ads returned...");
+      return ads;
+      
+      
+      
+  }
+    
     
 
     /**
@@ -1083,142 +840,185 @@ public class Ontology_System extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        ad_table = new javax.swing.JTable();
-        jTextField1 = new javax.swing.JTextField();
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        jPanel1 = new javax.swing.JPanel();
+        jCheckBox1 = new javax.swing.JCheckBox();
         jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jComboBox1 = new javax.swing.JComboBox();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
+        jCheckBox3 = new javax.swing.JCheckBox();
+        jLabel2 = new javax.swing.JLabel();
+        jTextField2 = new javax.swing.JTextField();
+        jLabel3 = new javax.swing.JLabel();
+        jCheckBox4 = new javax.swing.JCheckBox();
+        jLabel4 = new javax.swing.JLabel();
+        jTextField3 = new javax.swing.JTextField();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("E-COMMERCE ONTOLOGY SYSTEM");
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setTitle("Fetch Data");
+        setResizable(false);
 
-        jScrollPane1.setBackground(new java.awt.Color(255, 255, 255));
+        jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        ad_table.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
-        ad_table.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
+        jCheckBox1.setBackground(new java.awt.Color(255, 255, 255));
+        jCheckBox1.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jCheckBox1.setText("Truncate DB");
 
-            },
-            new String [] {
-                "Ad", "Site Location", "Brand", "Model", "Price", "Chipset", "CPU", "Camera", "Memory"
-            }
-        ));
-        jScrollPane1.setViewportView(ad_table);
-
-        jTextField1.setFont(new java.awt.Font("Calibri Light", 0, 18)); // NOI18N
-        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyReleased(java.awt.event.KeyEvent evt) {
-                jTextField1KeyReleased(evt);
-            }
-        });
-
-        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jButton1.setText("view full details");
+        jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jButton1.setText("GO");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jButton2.setText("Search");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        jCheckBox3.setBackground(new java.awt.Color(255, 255, 255));
+        jCheckBox3.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jCheckBox3.setText("Limit fetch");
+        jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                jCheckBox3ActionPerformed(evt);
             }
         });
 
-        jComboBox1.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Ad/Product", "Brand", "Model", "Site" }));
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        jLabel2.setText("Value:");
+        jLabel2.setEnabled(false);
 
-        jMenu1.setText("File");
-
-        jMenuItem1.setText("Get Data");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        jTextField2.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jTextField2.setEnabled(false);
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                jTextField2ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
 
-        jMenuBar1.add(jMenu1);
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 102, 102));
+        jLabel3.setText("Please wait while data is being processed");
 
-        jMenu2.setText("Edit");
-        jMenuBar1.add(jMenu2);
+        jCheckBox4.setBackground(new java.awt.Color(255, 255, 255));
+        jCheckBox4.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jCheckBox4.setText("Limit data");
+        jCheckBox4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox4ActionPerformed(evt);
+            }
+        });
 
-        setJMenuBar(jMenuBar1);
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        jLabel4.setText("Value:");
+        jLabel4.setEnabled(false);
+
+        jTextField3.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        jTextField3.setEnabled(false);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                            .addComponent(jLabel2)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(jCheckBox1))
+                .addGap(33, 33, 33)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(45, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(103, 103, 103))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(24, 24, 24))))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jCheckBox1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jCheckBox3))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jCheckBox4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 973, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jButton1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 253, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 450, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton1)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        
-        get_id_selected_row();
-        
-        if (ad_table.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(null, "Please select a ad before to view");
-        } else {
-            
-                view = new View_full_details();
-                view.setVisible(true);
-            
+    private void jCheckBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox4ActionPerformed
+        if (jCheckBox4.isSelected()) {
+            jLabel4.setEnabled(true);
+            jTextField3.setEnabled(true);
         }
+        else{
+            jLabel4.setEnabled(false);
+            jTextField3.setEnabled(false);
+
+        }
+
+    }//GEN-LAST:event_jCheckBox4ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jCheckBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox3ActionPerformed
+        if (jCheckBox3.isSelected()) {
+            jTextField2.setEnabled(true);
+            jLabel2.setEnabled(true);
+        }
+        else{
+            jTextField2.setEnabled(false);
+            jLabel2.setEnabled(false);
+        }
+
+    }//GEN-LAST:event_jCheckBox3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        jLabel3.setVisible(true);
+        index();
+        jLabel3.setText("Success! Click close to view data");
+        jButton1.setText("close");
+        jLabel3.setForeground(new java.awt.Color(0, 153, 51));
     }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
-      
-    }//GEN-LAST:event_jTextField1KeyReleased
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        populate_search();
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        getdata = new GetData(this, true);
-        getdata.setVisible(true);
-        
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -1231,40 +1031,48 @@ public class Ontology_System extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Windows".equals(info.getName())) {
+                if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Ontology_System.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GetData.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Ontology_System.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GetData.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Ontology_System.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GetData.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Ontology_System.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(GetData.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
-        /* Create and display the form */
+        /* Create and display the dialog */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Ontology_System().setVisible(true);
+                GetData dialog = new GetData(new javax.swing.JFrame(), true);
+                dialog.addWindowListener(new java.awt.event.WindowAdapter() {
+                    @Override
+                    public void windowClosing(java.awt.event.WindowEvent e) {
+                        System.exit(0);
+                    }
+                });
+                dialog.setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JTable ad_table;
+    private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox jComboBox1;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox3;
+    private javax.swing.JCheckBox jCheckBox4;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 }

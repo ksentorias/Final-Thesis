@@ -261,7 +261,7 @@ public class View_full_details extends javax.swing.JFrame {
                  //<editor-fold defaultstate="collapsed" desc="set image to ad iomage">
                    try {
                       URL u = new URL(ad_image_string);
-                     ImageIcon imgThisImg = new ImageIcon(resize(u,171,199));
+                     ImageIcon imgThisImg = new ImageIcon(resize(u,191,221));
                      ad_image.setText("");
                      ad_image.setIcon(imgThisImg);
                  } catch (IOException e) {
@@ -412,7 +412,7 @@ public class View_full_details extends javax.swing.JFrame {
                      //<editor-fold defaultstate="collapsed" desc="specs image">
                      try {
                          URL u = new URL(specs[32]);
-                         ImageIcon imgThisImg = new ImageIcon(resize(u,171,199));
+                         ImageIcon imgThisImg = new ImageIcon(resize(u,191,221));
                          ad_image1.setText("");
                          ad_image1.setIcon(imgThisImg);
                      } catch (IOException e) {
@@ -459,6 +459,7 @@ public class View_full_details extends javax.swing.JFrame {
      }
      
      public  void populate_specs_next(){
+         
                   if (it.hasNext()) {
                       model_current = it.next();
                       
@@ -467,7 +468,7 @@ public class View_full_details extends javax.swing.JFrame {
                      //<editor-fold defaultstate="collapsed" desc="specs image">
                      try {
                          URL u = new URL(specs[32]);
-                         ImageIcon imgThisImg = new ImageIcon(resize(u,171,199));
+                         ImageIcon imgThisImg = new ImageIcon(resize(u,191,221));
                          ad_image1.setText("");
                          ad_image1.setIcon(imgThisImg);
                      } catch (IOException e) {
@@ -510,6 +511,7 @@ public class View_full_details extends javax.swing.JFrame {
     }
      
      public  void populate_specs_prev(){
+         
                   if (it.hasPrevious()) {
                       model_current = it.previous();
                       
@@ -518,7 +520,7 @@ public class View_full_details extends javax.swing.JFrame {
                      //<editor-fold defaultstate="collapsed" desc="specs image">
                      try {
                          URL u = new URL(specs[32]);
-                         ImageIcon imgThisImg = new ImageIcon(resize(u,171,199));
+                         ImageIcon imgThisImg = new ImageIcon(resize(u,191,221));
                          ad_image1.setText("");
                          ad_image1.setIcon(imgThisImg);
                      } catch (IOException e) {
@@ -798,17 +800,11 @@ public class View_full_details extends javax.swing.JFrame {
         ad_image_panel.setLayout(ad_image_panelLayout);
         ad_image_panelLayout.setHorizontalGroup(
             ad_image_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ad_image_panelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ad_image, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(ad_image, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
         );
         ad_image_panelLayout.setVerticalGroup(
             ad_image_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ad_image_panelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ad_image, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(ad_image, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
         );
 
         logo_panel.setBackground(new java.awt.Color(255, 255, 255));
@@ -820,9 +816,7 @@ public class View_full_details extends javax.swing.JFrame {
         logo_panel.setLayout(logo_panelLayout);
         logo_panelLayout.setHorizontalGroup(
             logo_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, logo_panelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(site_image, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE))
+            .addComponent(site_image, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 176, Short.MAX_VALUE)
         );
         logo_panelLayout.setVerticalGroup(
             logo_panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -926,17 +920,11 @@ public class View_full_details extends javax.swing.JFrame {
         ad_image_panel1.setLayout(ad_image_panel1Layout);
         ad_image_panel1Layout.setHorizontalGroup(
             ad_image_panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ad_image_panel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ad_image1, javax.swing.GroupLayout.DEFAULT_SIZE, 171, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(ad_image1, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
         );
         ad_image_panel1Layout.setVerticalGroup(
             ad_image_panel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ad_image_panel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(ad_image1, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
-                .addContainerGap())
+            .addComponent(ad_image1, javax.swing.GroupLayout.DEFAULT_SIZE, 221, Short.MAX_VALUE)
         );
 
         jScrollPane2.setBackground(new java.awt.Color(255, 255, 255));
@@ -1236,7 +1224,7 @@ public class View_full_details extends javax.swing.JFrame {
                     .addGroup(jPanel8Layout.createSequentialGroup()
                         .addComponent(jLabel43)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel44, javax.swing.GroupLayout.DEFAULT_SIZE, 161, Short.MAX_VALUE)))
+                        .addComponent(jLabel44, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         jPanel8Layout.setVerticalGroup(
@@ -1299,7 +1287,7 @@ public class View_full_details extends javax.swing.JFrame {
                     .addComponent(jLabel47))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel50, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+                    .addComponent(jLabel50, javax.swing.GroupLayout.DEFAULT_SIZE, 166, Short.MAX_VALUE)
                     .addComponent(jLabel51, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel48, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
@@ -1516,12 +1504,12 @@ public class View_full_details extends javax.swing.JFrame {
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel8, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jPanel11, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1565,6 +1553,7 @@ public class View_full_details extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(51, 51, 51));
         jLabel5.setText("#model");
 
+        jScrollPane3.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Description", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Calibri", 0, 14))); // NOI18N
 
         jTextPane1.setEditable(false);
@@ -1603,24 +1592,22 @@ public class View_full_details extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel5))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(ad_image_panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(ad_image_panel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addGap(17, 17, 17)
-                                        .addComponent(jButton2)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(0, 0, Short.MAX_VALUE))
+                                .addGap(17, 17, 17)
+                                .addComponent(jButton2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 78, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 286, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap())
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 339, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(57, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel5)
+                        .addContainerGap())))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
