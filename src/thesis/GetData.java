@@ -24,12 +24,12 @@ import java.awt.HeadlessException;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -39,7 +39,6 @@ import org.apache.log4j.ConsoleAppender;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
-import static thesis.Ontology_System.conn;
 import static thesis.Ontology_System.sql;
 
 /**
@@ -62,6 +61,8 @@ public class GetData extends javax.swing.JDialog {
         initComponents();
         this.setLocationRelativeTo(parent);
         jLabel3.setVisible(false);
+        
+  
     }
     
     public OntModel loadModel(){
@@ -126,7 +127,7 @@ public class GetData extends javax.swing.JDialog {
         
 //</editor-fold>
         
-               get_data_from_web();
+             
         
           //<editor-fold defaultstate="collapsed" desc="variables">
           boolean haveBrand;
@@ -316,6 +317,8 @@ public class GetData extends javax.swing.JDialog {
     
        
   }
+    
+   
     
     public List getModels(String brand){
         
@@ -637,50 +640,58 @@ public class GetData extends javax.swing.JDialog {
     
     public void get_data_from_web(){
         Connection conn = getConnectiontoDB();
-        
-        String sqlb = "";
+
         
         String limit = "limit";
-        if (jCheckBox1.isSelected()) {
-            sqlb = "TRUNCATE TABLE olx;\n" +
-                    "TRUNCATE TABLE lazada;\n" +
-                    "TRUNCATE TABLE ebay;\n" +
-                    "TRUNCATE TABLE ontology_system_final_table;\n" +
-                    "TRUNCATE TABLE ads;\n\n";
-        }
+       
         if (jCheckBox3.isSelected()) {
+            System.out.println("limit fetch selected!");
             limit = limit + " " + jTextField2.getText();
+            
+            System.out.println("limit fetch " + limit);
+            
             
         }
         else limit = "";
-    
-        try{
-            sqlb = sqlb + "LOAD DATA LOCAL INFILE 'C:/Users/test/Documents/final ad crawler csv/ebay crawl.csv' INTO TABLE ebay FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\n' IGNORE 1 LINES;# 54 rows affected.\n" +
-                "\n" +
-                "LOAD DATA LOCAL INFILE 'C:/Users/test/Documents/final ad crawler csv/olx crawl.csv' INTO TABLE olx FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\n' IGNORE 1 LINES;# 581 rows affected.\n" +
-                "\n" +
-                "LOAD DATA LOCAL INFILE 'C:/Users/test/Documents/final ad crawler csv/lazada crawl.csv' INTO TABLE lazada FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\n' IGNORE 1 LINES;# 32 rows affected.\n" +
-                "\n" +
-                "\n" +
-                "\n" +
-                "INSERT INTO ads (ad_name, site, price, location, posted_by, description, image, link)\n" +
-                "(SELECT link, g, h, cdf, i, asd, image, e FROM ebay "+limit+")\n" +
-                "union\n" +
-                "(SELECT g, ad_name, h, dsf, cdf, zxcz, i, link FROM olx "+limit+")\n" +
-                "union\n" +
-                "(SELECT g, ad_name, cxzc, cdf, zxcz, dsf, h, link FROM lazada "+limit+")# 15 rows affected.";
+        
+        
+        try {
+            Statement stmt = conn.createStatement();
             
-             JOptionPane.showMessageDialog(null,"get data from web: \n"+ sqlb);
-
-           PreparedStatement pstb = conn.prepareStatement(sqlb);
-           pstb.execute(sql);
-            
-            
-            
+            if (jCheckBox1.isSelected()) {
+                String a = "TRUNCATE TABLE olx;";
+                String b = "TRUNCATE TABLE lazada";
+                String c = "TRUNCATE TABLE ebay";
+                String d = "TRUNCATE TABLE ads";
+                String e = "TRUNCATE TABLE ontology_system_final_table";
+                stmt.addBatch(a);
+                stmt.addBatch(b);
+                stmt.addBatch(c);
+                stmt.addBatch(d);
+                stmt.addBatch(e);
+                
             }
-        catch(Exception err){
-                    JOptionPane.showMessageDialog(null,"get data from web: "+ err);
-                }
+            
+            String f = "LOAD DATA LOCAL INFILE 'C:/Users/test/Documents/final ad crawler csv/ebay crawl.csv' INTO TABLE ebay FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\n' IGNORE 1 LINES;\n";
+            String g = "LOAD DATA LOCAL INFILE 'C:/Users/test/Documents/final ad crawler csv/olx crawl.csv' INTO TABLE olx FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\n' IGNORE 1 LINES;# 581 rows affected.\n";
+            String h = "LOAD DATA LOCAL INFILE 'C:/Users/test/Documents/final ad crawler csv/lazada crawl.csv' INTO TABLE lazada FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\\n' IGNORE 1 LINES;# 32 rows affected.\n";
+            String i = "INSERT INTO ads (ad_name, site, price, location, posted_by, description, image, link)\n"
+                    + "(SELECT link, g, h, cdf, i, asd, image, e FROM ebay "+limit+")\n"
+                    + "union\n"
+                    + "(SELECT g, ad_name, h, dsf, cdf, zxcz, i, link FROM olx "+limit+")\n"
+                    + "union\n"
+                    + "(SELECT g, ad_name, cxzc, cdf, zxcz, dsf, h, link FROM lazada "+limit+" )";
+            
+            
+            stmt.addBatch(f);
+            stmt.addBatch(g);
+            stmt.addBatch(h);
+            stmt.addBatch(i);
+            
+            stmt.executeBatch();
+        } catch (SQLException sQLException) {
+            System.err.println("sQLException = " + sQLException);
+        }
     }
     
     public List<String[]> ads(){
@@ -692,11 +703,7 @@ public class GetData extends javax.swing.JDialog {
 //</editor-fold>
         System.out.println("getting ads list...");
         
-        String limit = "";
      
-        if (jCheckBox4.isSelected()) {
-            limit = "limit " + jTextField3.getText();
-        }
 
        // List<List<String>> ads = new ArrayList<>();
         List<String[]> ads = new ArrayList<>();
@@ -729,7 +736,7 @@ public class GetData extends javax.swing.JDialog {
       
       try{
           System.out.println("query'ing ads...");
-            sql = "select * from `ads` "+limit+" ";
+            sql = "select * from `ads` ";
             pst = conn.prepareStatement(sql);
             rs = pst.executeQuery();
             
@@ -848,9 +855,6 @@ public class GetData extends javax.swing.JDialog {
         jLabel2 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
-        jCheckBox4 = new javax.swing.JCheckBox();
-        jLabel4 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Fetch Data");
@@ -860,7 +864,8 @@ public class GetData extends javax.swing.JDialog {
 
         jCheckBox1.setBackground(new java.awt.Color(255, 255, 255));
         jCheckBox1.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        jCheckBox1.setText("Truncate DB");
+        jCheckBox1.setText("Clean all data");
+        jCheckBox1.setToolTipText("Cleans all data if unchecked \ndata will be added with the existing one");
 
         jButton1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jButton1.setText("GO");
@@ -872,7 +877,8 @@ public class GetData extends javax.swing.JDialog {
 
         jCheckBox3.setBackground(new java.awt.Color(255, 255, 255));
         jCheckBox3.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        jCheckBox3.setText("Limit fetch");
+        jCheckBox3.setText("Limit per site");
+        jCheckBox3.setToolTipText("limits a number of data per website");
         jCheckBox3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jCheckBox3ActionPerformed(evt);
@@ -895,78 +901,48 @@ public class GetData extends javax.swing.JDialog {
         jLabel3.setForeground(new java.awt.Color(0, 102, 102));
         jLabel3.setText("Please wait while data is being processed");
 
-        jCheckBox4.setBackground(new java.awt.Color(255, 255, 255));
-        jCheckBox4.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        jCheckBox4.setText("Limit data");
-        jCheckBox4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jCheckBox4ActionPerformed(evt);
-            }
-        });
-
-        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
-        jLabel4.setText("Value:");
-        jLabel4.setEnabled(false);
-
-        jTextField3.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
-        jTextField3.setEnabled(false);
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(20, 20, 20)
+                .addComponent(jCheckBox1)
+                .addGap(10, 10, 10)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                            .addComponent(jLabel2)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addComponent(jCheckBox1))
-                .addGap(33, 33, 33)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jCheckBox4, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCheckBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addComponent(jLabel4)
+                        .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(45, Short.MAX_VALUE)
+                .addContainerGap(43, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(103, 103, 103))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(24, 24, 24))))
+                        .addGap(26, 26, 26))))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jCheckBox1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jCheckBox1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jCheckBox3))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jCheckBox4)
+                        .addComponent(jCheckBox3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                            .addComponent(jLabel2)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(18, 18, 18)
                 .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 15, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -982,19 +958,6 @@ public class GetData extends javax.swing.JDialog {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void jCheckBox4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox4ActionPerformed
-        if (jCheckBox4.isSelected()) {
-            jLabel4.setEnabled(true);
-            jTextField3.setEnabled(true);
-        }
-        else{
-            jLabel4.setEnabled(false);
-            jTextField3.setEnabled(false);
-
-        }
-
-    }//GEN-LAST:event_jCheckBox4ActionPerformed
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
         // TODO add your handling code here:
@@ -1013,11 +976,21 @@ public class GetData extends javax.swing.JDialog {
     }//GEN-LAST:event_jCheckBox3ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        jLabel3.setVisible(true);
-        index();
-        jLabel3.setText("Success! Click close to view data");
-        jButton1.setText("close");
-        jLabel3.setForeground(new java.awt.Color(0, 153, 51));
+        if ("close".equals(jButton1.getText().toLowerCase())) this.dispose();
+        else {
+        
+            jLabel3.setVisible(true);
+            get_data_from_web();
+            index();
+            jLabel3.setText("Success! Click close to view data");
+            jButton1.setText("close");
+            jLabel3.setForeground(new java.awt.Color(0, 153, 51));
+        }
+
+              
+        
+         
+        
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -1067,12 +1040,9 @@ public class GetData extends javax.swing.JDialog {
     private javax.swing.JButton jButton1;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JCheckBox jCheckBox3;
-    private javax.swing.JCheckBox jCheckBox4;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
     // End of variables declaration//GEN-END:variables
 }

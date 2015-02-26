@@ -51,14 +51,12 @@ import org.apache.log4j.PatternLayout;
  */
 public class Ontology_System extends javax.swing.JFrame {
 
-   static Connection conn = null;
-   static ResultSet rs  = null;
-   static PreparedStatement pst = null;
+    Connection conn = null;
+    ResultSet rs  = null;
+    PreparedStatement pst = null;
    public static int ID = 0;
    DefaultTableModel model;
-
    String ns = "http://xu.edu.ph/ecommerce#";
-   
    static String sql = ""; 
    private View_full_details view;
    
@@ -78,8 +76,31 @@ public class Ontology_System extends javax.swing.JFrame {
       //getSpecs("mi_4");
       //getModelfromAd("Solar Outdoor Rugged Powerbank & Solar Outdoor Gadgets lumia"); 
         
-       populate_table();
+   //    populate_table();
+       testbrands();
     }
+    
+     public void testbrands(){
+          
+          
+          List b = getBrands();
+          List m;
+          
+          for (Object object : b) {
+              
+              m = getModels(object.toString());
+              
+              System.out.println("************************\n"+object.toString());
+              
+              for (Object object1 : m) {
+                  System.out.println(object1);
+                  
+              }
+             
+         }
+    
+       
+  }
    
     public OntModel loadModel(){
     
@@ -579,7 +600,7 @@ public class Ontology_System extends javax.swing.JFrame {
           rootLogger.setLevel(Level.INFO);
           rootLogger.addAppender(new ConsoleAppender(new PatternLayout("%-6r [%p] %c - %m%n")));
           
-        System.out.println("getting brands list...");
+        
         List <String> brands = new ArrayList();
      
         
@@ -606,11 +627,11 @@ public class Ontology_System extends javax.swing.JFrame {
                  
                     }
                     
-               //     System.out.println(a);
+               //    
       
       //  brands = new String[] {"samsung","xolo","xiaomi","lg","zte","yezz","blu","toshiba","htc","niu","micromax","pantech","blackberry","motorola","vodafone","celkon","lava","lenovo","maxwest","gigabyte","vivo","verykool","pretigio","acer","nokia","microsoft","spice","plum","sony","gionee","apple","huawei","alcatel","asus","parla"};
        
-    System.out.println("brand list submitted...");
+   
     return brands;
     
        
@@ -626,7 +647,7 @@ public class Ontology_System extends javax.swing.JFrame {
       int i = 0;
         String a = "";
         
-        System.out.println("fetching models from the selected brand \""+ brand.toUpperCase()+"\"...");
+       
         Model model = loadModelfromServer();
                 
                     String query =
@@ -676,12 +697,12 @@ public class Ontology_System extends javax.swing.JFrame {
                
                
                }
-        //            System.out.println("list of models:\n"+a);
+        //           
                     //<editor-fold defaultstate="collapsed" desc="check model values">
                     /* int j = 0;
                     while(models[j]!=null){
                     
-                    System.out.println(models[j]);
+            
                     
                     j++;
                     }*/
